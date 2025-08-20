@@ -11,12 +11,25 @@ const AdminPage = async () => {
       tags: ["property"],
     },
   });
+  const needAppRes = await fetch(
+    `${process.env.BACKEND_URL}/api/v1/not-approved`,
+    {
+      next: {
+        tags: ["property"],
+      },
+    }
+  );
   const users = await userRes.json();
   const properties = await property.json();
+  const needApproveProperties = await needAppRes.json();
 
   return (
     <div>
-      <AdminDashboard users={users} properties={properties} />
+      <AdminDashboard
+        users={users}
+        properties={properties}
+        needApproveProperties={needApproveProperties}
+      />
     </div>
   );
 };

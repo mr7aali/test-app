@@ -38,33 +38,6 @@ interface IProperty {
   isApproved: boolean;
 }
 
-// const properties: PropertyData[] = [
-//   {
-//     _id: "68a224fd75df5ee4e198bc43",
-//     title: "This",
-//     ownerId: {
-//       _id: "689ebf8e0b6295dc6d980457",
-//       fullName: "Aali",
-//       email: "talent@gmail.com",
-//       role: "owner",
-//       phoneNumber: "+8801967119057",
-//     },
-//     location: "Sonadanga",
-//     type: "Bachelor",
-//     rent: "34",
-//     rooms: "3",
-//     bathrooms: "3",
-//     area: "12321",
-//     description: "Thi si th eproperty",
-//     features: ["Gym Access", "Semi-Furnished"],
-//     images: [
-//       "https://res.cloudinary.com/dzrlmvvzu/image/upload/v1755456380/t7yjhzzxfbzmskpaalsa.png",
-//     ],
-//     createdAt: "2025-08-17T18:52:45.562Z",
-//     updatedAt: "2025-08-17T18:52:45.562Z",
-//     isApproved: false,
-//   },
-// ];
 export const buttonStyles = {
   primary:
     "px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg text-white font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 text-sm sm:text-base",
@@ -79,9 +52,11 @@ export const buttonStyles = {
 const AdminDashboard = ({
   users,
   properties,
+  needApproveProperties,
 }: {
   users: IUser[];
   properties: IProperty[];
+  needApproveProperties: IProperty[];
 }) => {
   const [activeTab, setActiveTab] = useState<
     "users" | "properties" | "approvals"
@@ -414,7 +389,7 @@ const AdminDashboard = ({
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
-                  {properties.map((property) => (
+                  {needApproveProperties.map((property) => (
                     <tr key={property._id}>
                       <td className="px-4 py-4 sm:px-6">
                         <div className="text-sm font-medium text-gray-900">
