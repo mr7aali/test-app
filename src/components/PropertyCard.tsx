@@ -3,8 +3,22 @@ import Link from "next/link";
 import Image from "next/image";
 import { IProperties } from "@/app/saved/page";
 
+interface Property {
+  _id: string;
+  title: string;
+  location: string;
+  type: string;
+  rent: number;
+  rooms: number;
+  bathrooms: number;
+  area: string;
+  image: string;
+  images: string[]; // Optional array of images
+  features: string[];
+}
+
 interface PropertyCardProps {
-  property: IProperties;
+  property: IProperties | Property;
   isMobile?: boolean;
 }
 
