@@ -36,6 +36,7 @@ interface IProperty {
   createdAt: string;
   updatedAt: string;
   isApproved: boolean;
+  status: "approve" | "reject" | "pending";
 }
 
 export const buttonStyles = {
@@ -123,7 +124,7 @@ const AdminDashboard = ({
     });
     setShowPropertyModal(true);
   };
-  console.log(selectedUser, "selected usr by ali");
+
   const handleUpdateUser = async () => {
     if (selectedUser?._id)
       await updateUser({ id: selectedUser._id, updatedData: userForm });
@@ -287,10 +288,10 @@ const AdminDashboard = ({
                       Location
                     </th>
                     <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider sm:px-6 hidden lg:table-cell">
-                      Rent
+                      Rent/m
                     </th>
                     <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider sm:px-6 hidden xl:table-cell">
-                      Owner
+                      Status
                     </th>
                     <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider sm:px-6">
                       Actions
@@ -334,9 +335,23 @@ const AdminDashboard = ({
                       <td className="px-4 py-4 sm:px-6 hidden lg:table-cell">
                         ${property.rent}
                       </td>
-                      <td className="px-4 py-4 sm:px-6 hidden xl:table-cell">
-                        {property.ownerId.fullName}
+                      <td>
+                        <span
+                          className={`px-2 py-1 rounded-full text-white text-sm font-medium ${
+                            property.status === "approve"
+                              ? "bg-green-600"
+                              : property.status === "reject"
+                              ? "bg-red-600"
+                              : "bg-yellow-600"
+                          }`}
+                        >
+                          {property.status.charAt(0).toUpperCase() +
+                            property.status.slice(1)}
+                        </span>
                       </td>
+                      {/* <td className="px-4 py-4 sm:px-6 hidden xl:table-cell">
+                        {property.ownerId.fullName}
+                      </td> */}
                       <td className="px-4 py-4 sm:px-6 whitespace-nowrap">
                         <button
                           onClick={() => handleEditProperty(property)}
@@ -378,7 +393,7 @@ const AdminDashboard = ({
                       Location
                     </th>
                     <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider sm:px-6 hidden lg:table-cell">
-                      Owner
+                      Rent
                     </th>
                     <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider sm:px-6 hidden xl:table-cell">
                       Status
@@ -391,17 +406,12 @@ const AdminDashboard = ({
                 <tbody className="bg-white divide-y divide-gray-200">
                   {needApproveProperties.map((property) => (
                     <tr key={property._id}>
+                      {/* {{title}} */}
                       <td className="px-4 py-4 sm:px-6">
                         <div className="text-sm font-medium text-gray-900">
                           {property.title}
                         </div>
-                        <div className="text-sm text-gray-500 sm:hidden">
-                          <img
-                            src={property.images[0] || "/placeholder.jpg"}
-                            alt={property.title}
-                            className="w-16 h-16 object-cover rounded-lg mt-1"
-                          />
-                        </div>
+
                         <div className="text-sm text-gray-500 md:hidden">
                           {property.location}
                         </div>
@@ -416,6 +426,7 @@ const AdminDashboard = ({
                           )}
                         </div>
                       </td>
+                      {/* picture */}
                       <td className="px-4 py-4 sm:px-6 hidden sm:table-cell">
                         <img
                           src={property.images[0] || "/placeholder.jpg"}
@@ -423,19 +434,30 @@ const AdminDashboard = ({
                           className="w-16 h-16 object-cover rounded-lg"
                         />
                       </td>
+                      {/* location */}
                       <td className="px-4 py-4 sm:px-6 hidden md:table-cell">
                         {property.location}
                       </td>
-                      <td className="px-4 py-4 sm:px-6 hidden lg:table-cell">
-                        {property.ownerId.fullName}
+                      <td className="px-4 py-4 sm:px-6 hidden md:table-cell">
+                        {" "}
+                        {property.rent}
                       </td>
-                      <td className="px-4 py-4 sm:px-6 hidden xl:table-cell">
-                        {property.isApproved ? (
-                          <span className="text-green-600">Approved</span>
-                        ) : (
-                          <span className="text-yellow-600">Pending</span>
-                        )}
+                      {/* {{status}} */}
+                      <td className="px-4 py-4 sm:px-6 hidden md:table-cell">
+                        <span
+                          className={`px-2 py-1 rounded-full text-white text-sm font-medium ${
+                            property.status === "approve"
+                              ? "bg-green-600"
+                              : property.status === "reject"
+                              ? "bg-red-600"
+                              : "bg-yellow-600"
+                          }`}
+                        >
+                          {property.status.charAt(0).toUpperCase() +
+                            property.status.slice(1)}
+                        </span>
                       </td>
+                      {/* {{button}} */}
                       <td className="px-4 py-4 sm:px-6 whitespace-nowrap">
                         {!property.isApproved && (
                           <>

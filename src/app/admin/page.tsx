@@ -12,7 +12,7 @@ const AdminPage = async () => {
     },
   });
   const needAppRes = await fetch(
-    `${process.env.BACKEND_URL}/api/v1/not-approved`,
+    `${process.env.BACKEND_URL}/api/v1/property/not-approved`,
     {
       next: {
         tags: ["property"],
