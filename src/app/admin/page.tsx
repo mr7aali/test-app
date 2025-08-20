@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import { User, Home, CheckCircle } from "lucide-react";
+import { User, Home, CheckCircle, Menu, X } from "lucide-react";
 
 interface UserData {
   _id: string;
@@ -96,6 +96,7 @@ const AdminDashboard: React.FC = () => {
     | null
   >(null);
   const [confirmId, setConfirmId] = useState<string | null>(null);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const [userForm, setUserForm] = useState({
     fullName: "",
@@ -141,13 +142,11 @@ const AdminDashboard: React.FC = () => {
   };
 
   const handleUpdateUser = () => {
-    // Implement update user logic (e.g., API call)
     console.log("Updating user:", userForm);
     setShowUserModal(false);
   };
 
   const handleUpdateProperty = () => {
-    // Implement update property logic (e.g., API call)
     console.log("Updating property:", propertyForm);
     setShowPropertyModal(false);
   };
@@ -180,16 +179,30 @@ const AdminDashboard: React.FC = () => {
     setShowConfirmModal(true);
   };
 
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+  };
+
   return (
-    <div className="flex h-screen bg-gray-100">
+    <div className="flex min-h-screen bg-gray-100">
       {/* Sidebar */}
-      <aside className="w-64 bg-white shadow-md">
-        <div className="p-4">
+      <aside
+        className={`fixed inset-y-0 left-0 z-50 w-64 bg-white shadow-md transform transition-transform duration-300 lg:static lg:transform-none ${
+          isSidebarOpen ? "translate-x-0" : "-translate-x-full"
+        } lg:translate-x-0`}
+      >
+        <div className="p-4 flex items-center justify-between">
           <h1 className="text-2xl font-bold text-gray-800">Admin Dashboard</h1>
+          <button className="lg:hidden" onClick={toggleSidebar}>
+            <X className="w-6 h-6 text-gray-600" />
+          </button>
         </div>
         <nav className="mt-6">
           <button
-            onClick={() => setActiveTab("users")}
+            onClick={() => {
+              setActiveTab("users");
+              setIsSidebarOpen(false);
+            }}
             className={`flex items-center w-full p-4 text-left ${
               activeTab === "users"
                 ? "bg-blue-100 text-blue-600"
@@ -200,7 +213,10 @@ const AdminDashboard: React.FC = () => {
             Users
           </button>
           <button
-            onClick={() => setActiveTab("properties")}
+            onClick={() => {
+              setActiveTab("properties");
+              setIsSidebarOpen(false);
+            }}
             className={`flex items-center w-full p-4 text-left ${
               activeTab === "properties"
                 ? "bg-blue-100 text-blue-600"
@@ -211,7 +227,10 @@ const AdminDashboard: React.FC = () => {
             Properties
           </button>
           <button
-            onClick={() => setActiveTab("approvals")}
+            onClick={() => {
+              setActiveTab("approvals");
+              setIsSidebarOpen(false);
+            }}
             className={`flex items-center w-full p-4 text-left ${
               activeTab === "approvals"
                 ? "bg-blue-100 text-blue-600"
@@ -225,209 +244,264 @@ const AdminDashboard: React.FC = () => {
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 p-8 overflow-auto">
-        <h2 className="text-3xl font-semibold text-gray-800 mb-6">
-          {activeTab === "users"
-            ? "User Management"
-            : activeTab === "properties"
-            ? "Property Management"
-            : "Property Approvals"}
-        </h2>
+      <main className="flex-1 p-4 sm:p-6 lg:p-8 overflow-auto">
+        <div className="flex justify-between items-center mb-6">
+          <h2 className="text-2xl sm:text-3xl font-semibold text-gray-800">
+            {activeTab === "users"
+              ? "User Management"
+              : activeTab === "properties"
+              ? "Property Management"
+              : "Property Approvals"}
+          </h2>
+          <button className="lg:hidden" onClick={toggleSidebar}>
+            <Menu className="w-6 h-6 text-gray-600" />
+          </button>
+        </div>
 
         {/* Users Table */}
         {activeTab === "users" && (
           <div className="bg-white shadow-md rounded-lg overflow-hidden">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Name
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Email
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Role
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Phone
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Actions
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-                {users.map((user) => (
-                  <tr key={user._id}>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      {user.fullName}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      {user.email}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">{user.role}</td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      {user.phoneNumber}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <button
-                        onClick={() => handleEditUser(user)}
-                        className="text-blue-600 hover:text-blue-800 mr-2 transition-colors duration-200"
-                      >
-                        Edit
-                      </button>
-                      <button
-                        onClick={() => openConfirmModal("deleteUser", user._id)}
-                        className="text-red-600 hover:text-red-800 transition-colors duration-200"
-                      >
-                        Delete
-                      </button>
-                    </td>
+            <div className="overflow-x-auto">
+              <table className="min-w-full divide-y divide-gray-200">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider sm:px-6">
+                      Name
+                    </th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider sm:px-6 hidden sm:table-cell">
+                      Email
+                    </th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider sm:px-6 hidden md:table-cell">
+                      Role
+                    </th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider sm:px-6 hidden lg:table-cell">
+                      Phone
+                    </th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider sm:px-6">
+                      Actions
+                    </th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-200">
+                  {users.map((user) => (
+                    <tr key={user._id}>
+                      <td className="px-4 py-4 sm:px-6">
+                        <div className="text-sm font-medium text-gray-900">
+                          {user.fullName}
+                        </div>
+                        <div className="text-sm text-gray-500 sm:hidden">
+                          {user.email}
+                        </div>
+                        <div className="text-sm text-gray-500 md:hidden">
+                          {user.role}
+                        </div>
+                        <div className="text-sm text-gray-500 lg:hidden">
+                          {user.phoneNumber}
+                        </div>
+                      </td>
+                      <td className="px-4 py-4 sm:px-6 hidden sm:table-cell">
+                        {user.email}
+                      </td>
+                      <td className="px-4 py-4 sm:px-6 hidden md:table-cell">
+                        {user.role}
+                      </td>
+                      <td className="px-4 py-4 sm:px-6 hidden lg:table-cell">
+                        {user.phoneNumber}
+                      </td>
+                      <td className="px-4 py-4 sm:px-6 whitespace-nowrap">
+                        <button
+                          onClick={() => handleEditUser(user)}
+                          className="text-blue-600 hover:text-blue-800 mr-2 transition-colors duration-200"
+                        >
+                          Edit
+                        </button>
+                        <button
+                          onClick={() =>
+                            openConfirmModal("deleteUser", user._id)
+                          }
+                          className="text-red-600 hover:text-red-800 transition-colors duration-200"
+                        >
+                          Delete
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
         )}
 
         {/* Properties Table */}
         {activeTab === "properties" && (
           <div className="bg-white shadow-md rounded-lg overflow-hidden">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Title
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Location
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Rent
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Owner
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Actions
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-                {properties.map((property) => (
-                  <tr key={property._id}>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      {property.title}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      {property.location}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      ${property.rent}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      {property.ownerId.fullName}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <button
-                        onClick={() => handleEditProperty(property)}
-                        className="text-blue-600 hover:text-blue-800 mr-2 transition-colors duration-200"
-                      >
-                        Edit
-                      </button>
-                      <button
-                        onClick={() =>
-                          openConfirmModal("deleteProperty", property._id)
-                        }
-                        className="text-red-600 hover:text-red-800 transition-colors duration-200"
-                      >
-                        Delete
-                      </button>
-                    </td>
+            <div className="overflow-x-auto">
+              <table className="min-w-full divide-y divide-gray-200">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider sm:px-6">
+                      Title
+                    </th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider sm:px-6 hidden sm:table-cell">
+                      Location
+                    </th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider sm:px-6 hidden md:table-cell">
+                      Rent
+                    </th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider sm:px-6 hidden lg:table-cell">
+                      Owner
+                    </th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider sm:px-6">
+                      Actions
+                    </th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-200">
+                  {properties.map((property) => (
+                    <tr key={property._id}>
+                      <td className="px-4 py-4 sm:px-6">
+                        <div className="text-sm font-medium text-gray-900">
+                          {property.title}
+                        </div>
+                        <div className="text-sm text-gray-500 sm:hidden">
+                          {property.location}
+                        </div>
+                        <div className="text-sm text-gray-500 md:hidden">
+                          ${property.rent}
+                        </div>
+                        <div className="text-sm text-gray-500 lg:hidden">
+                          {property.ownerId.fullName}
+                        </div>
+                      </td>
+                      <td className="px-4 py-4 sm:px-6 hidden sm:table-cell">
+                        {property.location}
+                      </td>
+                      <td className="px-4 py-4 sm:px-6 hidden md:table-cell">
+                        ${property.rent}
+                      </td>
+                      <td className="px-4 py-4 sm:px-6 hidden lg:table-cell">
+                        {property.ownerId.fullName}
+                      </td>
+                      <td className="px-4 py-4 sm:px-6 whitespace-nowrap">
+                        <button
+                          onClick={() => handleEditProperty(property)}
+                          className="text-blue-600 hover:text-blue-800 mr-2 transition-colors duration-200"
+                        >
+                          Edit
+                        </button>
+                        <button
+                          onClick={() =>
+                            openConfirmModal("deleteProperty", property._id)
+                          }
+                          className="text-red-600 hover:text-red-800 transition-colors duration-200"
+                        >
+                          Delete
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
         )}
 
         {/* Approvals Table */}
         {activeTab === "approvals" && (
           <div className="bg-white shadow-md rounded-lg overflow-hidden">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Title
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Location
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Owner
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Status
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Actions
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-                {properties.map((property) => (
-                  <tr key={property._id}>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      {property.title}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      {property.location}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      {property.ownerId.fullName}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      {property.isApproved ? (
-                        <span className="text-green-600">Approved</span>
-                      ) : (
-                        <span className="text-yellow-600">Pending</span>
-                      )}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      {!property.isApproved && (
-                        <>
-                          <button
-                            onClick={() =>
-                              openConfirmModal("approveProperty", property._id)
-                            }
-                            className="text-green-600 hover:text-green-800 mr-2 transition-colors duration-200"
-                          >
-                            Approve
-                          </button>
-                          <button
-                            onClick={() =>
-                              openConfirmModal("rejectProperty", property._id)
-                            }
-                            className="text-red-600 hover:text-red-800 transition-colors duration-200"
-                          >
-                            Reject
-                          </button>
-                        </>
-                      )}
-                    </td>
+            <div className="overflow-x-auto">
+              <table className="min-w-full divide-y divide-gray-200">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider sm:px-6">
+                      Title
+                    </th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider sm:px-6 hidden sm:table-cell">
+                      Location
+                    </th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider sm:px-6 hidden md:table-cell">
+                      Owner
+                    </th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider sm:px-6 hidden lg:table-cell">
+                      Status
+                    </th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider sm:px-6">
+                      Actions
+                    </th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-200">
+                  {properties.map((property) => (
+                    <tr key={property._id}>
+                      <td className="px-4 py-4 sm:px-6">
+                        <div className="text-sm font-medium text-gray-900">
+                          {property.title}
+                        </div>
+                        <div className="text-sm text-gray-500 sm:hidden">
+                          {property.location}
+                        </div>
+                        <div className="text-sm text-gray-500 md:hidden">
+                          {property.ownerId.fullName}
+                        </div>
+                        <div className="text-sm text-gray-500 lg:hidden">
+                          {property.isApproved ? (
+                            <span className="text-green-600">Approved</span>
+                          ) : (
+                            <span className="text-yellow-600">Pending</span>
+                          )}
+                        </div>
+                      </td>
+                      <td className="px-4 py-4 sm:px-6 hidden sm:table-cell">
+                        {property.location}
+                      </td>
+                      <td className="px-4 py-4 sm:px-6 hidden md:table-cell">
+                        {property.ownerId.fullName}
+                      </td>
+                      <td className="px-4 py-4 sm:px-6 hidden lg:table-cell">
+                        {property.isApproved ? (
+                          <span className="text-green-600">Approved</span>
+                        ) : (
+                          <span className="text-yellow-600">Pending</span>
+                        )}
+                      </td>
+                      <td className="px-4 py-4 sm:px-6 whitespace-nowrap">
+                        {!property.isApproved && (
+                          <>
+                            <button
+                              onClick={() =>
+                                openConfirmModal(
+                                  "approveProperty",
+                                  property._id
+                                )
+                              }
+                              className="text-green-600 hover:text-green-800 mr-2 transition-colors duration-200"
+                            >
+                              Approve
+                            </button>
+                            <button
+                              onClick={() =>
+                                openConfirmModal("rejectProperty", property._id)
+                              }
+                              className="text-red-600 hover:text-red-800 transition-colors duration-200"
+                            >
+                              Reject
+                            </button>
+                          </>
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
         )}
 
         {/* User Update Modal */}
         {showUserModal && (
-          <div className="fixed inset-0 backdrop-blur-sm flex items-center justify-center z-50 transition-opacity duration-300">
-            <div className="bg-white p-8 rounded-2xl shadow-2xl w-full max-w-lg transform transition-all duration-300 scale-100 hover:scale-105">
-              <h3 className="text-2xl font-bold text-gray-800 mb-6">
+          <div className="fixed inset-0 bg-black bg-opacity-30 backdrop-blur-sm flex items-center justify-center z-50 transition-opacity duration-300">
+            <div className="bg-white p-6 sm:p-8 rounded-2xl shadow-2xl w-full max-w-[90%] sm:max-w-lg transform transition-all duration-300 scale-100 hover:scale-105">
+              <h3 className="text-xl sm:text-2xl font-bold text-gray-800 mb-6">
                 Update User
               </h3>
               <div className="space-y-5">
@@ -508,9 +582,9 @@ const AdminDashboard: React.FC = () => {
 
         {/* Property Update Modal */}
         {showPropertyModal && (
-          <div className="fixed inset-0  backdrop-blur-sm flex items-center justify-center z-50 transition-opacity duration-300">
-            <div className="bg-white p-8 rounded-2xl shadow-2xl w-full max-w-lg transform transition-all duration-300 scale-100 hover:scale-105">
-              <h3 className="text-2xl font-bold text-gray-800 mb-6">
+          <div className="fixed inset-0 bg-black bg-opacity-30 backdrop-blur-sm flex items-center justify-center z-50 transition-opacity duration-300">
+            <div className="bg-white p-6 sm:p-8 rounded-2xl shadow-2xl w-full max-w-[90%] sm:max-w-lg transform transition-all duration-300 scale-100 hover:scale-105">
+              <h3 className="text-xl sm:text-2xl font-bold text-gray-800 mb-6">
                 Update Property
               </h3>
               <div className="space-y-5">
@@ -661,12 +735,12 @@ const AdminDashboard: React.FC = () => {
 
         {/* Confirmation Modal */}
         {showConfirmModal && (
-          <div className="fixed inset-0  backdrop-blur-sm flex items-center justify-center z-50 transition-opacity duration-300">
-            <div className="bg-white p-8 rounded-2xl shadow-2xl w-full max-w-sm transform transition-all duration-300 scale-100 hover:scale-105">
-              <h3 className="text-2xl font-bold text-gray-800 mb-4">
+          <div className="fixed inset-0 bg-black bg-opacity-30 backdrop-blur-sm flex items-center justify-center z-50 transition-opacity duration-300">
+            <div className="bg-white p-6 sm:p-8 rounded-2xl shadow-2xl w-full max-w-[90%] sm:max-w-sm transform transition-all duration-300 scale-100 hover:scale-105">
+              <h3 className="text-xl sm:text-2xl font-bold text-gray-800 mb-4">
                 Confirm Action
               </h3>
-              <p className="text-gray-600 mb-6">
+              <p className="text-gray-600 mb-6 text-sm sm:text-base">
                 Are you sure you want to{" "}
                 {confirmAction === "deleteUser"
                   ? "delete this user?"
