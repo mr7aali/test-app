@@ -1,23 +1,10 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
-
-interface Property {
-  _id: string;
-  title: string;
-  location: string;
-  type: string;
-  rent: number;
-  rooms: number;
-  bathrooms: number;
-  area: string;
-  image: string;
-  images: string[]; // Optional array of images
-  features: string[];
-}
+import { IProperties } from "@/app/saved/page";
 
 interface PropertyCardProps {
-  property: Property;
+  property: IProperties;
   isMobile?: boolean;
 }
 
@@ -63,7 +50,7 @@ export default function PropertyCard({
   const imageSrc =
     Array.isArray(property.images) && property.images.length > 0
       ? property.images[0]
-      : property.image || "/fallback-image.jpg"; // Replace with your fallback image path
+      : property.images[0] || "/fallback-image.jpg"; // Replace with your fallback image path
 
   if (isMobile) {
     return (
@@ -117,7 +104,7 @@ export default function PropertyCard({
           </div>
           <div className="flex items-center justify-between">
             <span className="text-lg font-bold text-purple-600 dark:text-purple-400">
-              ৳{(property.rent / 1000).toFixed(0)}k
+              ৳{(Number(property.rent) / 1000).toFixed(0)}k
             </span>
             <Link href={`/property/${property._id}`}>
               <button className="px-2 py-1 bg-gradient-to-r from-purple-600 to-blue-600 text-white text-xs rounded-lg hover:from-purple-700 hover:to-blue-700 transition-all duration-300 cursor-pointer whitespace-nowrap">
