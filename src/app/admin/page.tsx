@@ -81,15 +81,103 @@ const AdminDashboard: React.FC = () => {
   const [activeTab, setActiveTab] = useState<
     "users" | "properties" | "approvals"
   >("users");
+  const [showUserModal, setShowUserModal] = useState(false);
+  const [showPropertyModal, setShowPropertyModal] = useState(false);
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [selectedUser, setSelectedUser] = useState<UserData | null>(null);
+  const [selectedProperty, setSelectedProperty] = useState<PropertyData | null>(
+    null
+  );
+  const [confirmAction, setConfirmAction] = useState<
+    | "deleteUser"
+    | "deleteProperty"
+    | "approveProperty"
+    | "rejectProperty"
+    | null
+  >(null);
+  const [confirmId, setConfirmId] = useState<string | null>(null);
 
-  const handleApprove = (propertyId: string) => {
-    // Implement approval logic (e.g., API call to update isApproved)
-    console.log(`Approving property ${propertyId}`);
+  const [userForm, setUserForm] = useState({
+    fullName: "",
+    email: "",
+    role: "",
+    phoneNumber: "",
+  });
+  const [propertyForm, setPropertyForm] = useState({
+    title: "",
+    location: "",
+    type: "",
+    rent: "",
+    rooms: "",
+    bathrooms: "",
+    area: "",
+    description: "",
+  });
+
+  const handleEditUser = (user: UserData) => {
+    setSelectedUser(user);
+    setUserForm({
+      fullName: user.fullName,
+      email: user.email,
+      role: user.role,
+      phoneNumber: user.phoneNumber,
+    });
+    setShowUserModal(true);
   };
 
-  const handleReject = (propertyId: string) => {
-    // Implement rejection logic (e.g., API call to update or delete)
-    console.log(`Rejecting property ${propertyId}`);
+  const handleEditProperty = (property: PropertyData) => {
+    setSelectedProperty(property);
+    setPropertyForm({
+      title: property.title,
+      location: property.location,
+      type: property.type,
+      rent: property.rent,
+      rooms: property.rooms,
+      bathrooms: property.bathrooms,
+      area: property.area,
+      description: property.description,
+    });
+    setShowPropertyModal(true);
+  };
+
+  const handleUpdateUser = () => {
+    // Implement update user logic (e.g., API call)
+    console.log("Updating user:", userForm);
+    setShowUserModal(false);
+  };
+
+  const handleUpdateProperty = () => {
+    // Implement update property logic (e.g., API call)
+    console.log("Updating property:", propertyForm);
+    setShowPropertyModal(false);
+  };
+
+  const handleConfirm = () => {
+    if (confirmAction === "deleteUser") {
+      console.log(`Deleting user ${confirmId}`);
+    } else if (confirmAction === "deleteProperty") {
+      console.log(`Deleting property ${confirmId}`);
+    } else if (confirmAction === "approveProperty") {
+      console.log(`Approving property ${confirmId}`);
+    } else if (confirmAction === "rejectProperty") {
+      console.log(`Rejecting property ${confirmId}`);
+    }
+    setShowConfirmModal(false);
+    setConfirmAction(null);
+    setConfirmId(null);
+  };
+
+  const openConfirmModal = (
+    action:
+      | "deleteUser"
+      | "deleteProperty"
+      | "approveProperty"
+      | "rejectProperty",
+    id: string
+  ) => {
+    setConfirmAction(action);
+    setConfirmId(id);
+    setShowConfirmModal(true);
   };
 
   return (
@@ -183,10 +271,16 @@ const AdminDashboard: React.FC = () => {
                       {user.phoneNumber}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <button className="text-blue-600 hover:text-blue-800 mr-2">
+                      <button
+                        onClick={() => handleEditUser(user)}
+                        className="text-blue-600 hover:text-blue-800 mr-2"
+                      >
                         Edit
                       </button>
-                      <button className="text-red-600 hover:text-red-800">
+                      <button
+                        onClick={() => openConfirmModal("deleteUser", user._id)}
+                        className="text-red-600 hover:text-red-800"
+                      >
                         Delete
                       </button>
                     </td>
@@ -236,10 +330,18 @@ const AdminDashboard: React.FC = () => {
                       {property.ownerId.fullName}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <button className="text-blue-600 hover:text-blue-800 mr-2">
+                      <button
+                        onClick={() => handleEditProperty(property)}
+                        className="text-blue-600 hover:text-blue-800 mr-2"
+                      >
                         Edit
                       </button>
-                      <button className="text-red-600 hover:text-red-800">
+                      <button
+                        onClick={() =>
+                          openConfirmModal("deleteProperty", property._id)
+                        }
+                        className="text-red-600 hover:text-red-800"
+                      >
                         Delete
                       </button>
                     </td>
@@ -296,13 +398,17 @@ const AdminDashboard: React.FC = () => {
                       {!property.isApproved && (
                         <>
                           <button
-                            onClick={() => handleApprove(property._id)}
+                            onClick={() =>
+                              openConfirmModal("approveProperty", property._id)
+                            }
                             className="text-green-600 hover:text-green-800 mr-2"
                           >
                             Approve
                           </button>
                           <button
-                            onClick={() => handleReject(property._id)}
+                            onClick={() =>
+                              openConfirmModal("rejectProperty", property._id)
+                            }
                             className="text-red-600 hover:text-red-800"
                           >
                             Reject
@@ -314,6 +420,205 @@ const AdminDashboard: React.FC = () => {
                 ))}
               </tbody>
             </table>
+          </div>
+        )}
+
+        {/* User Update Modal */}
+        {showUserModal && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
+              <h3 className="text-xl font-semibold mb-4">Update User</h3>
+              <div className="space-y-4">
+                <input
+                  type="text"
+                  value={userForm.fullName}
+                  onChange={(e) =>
+                    setUserForm({ ...userForm, fullName: e.target.value })
+                  }
+                  placeholder="Full Name"
+                  className="w-full p-2 border rounded"
+                />
+                <input
+                  type="email"
+                  value={userForm.email}
+                  onChange={(e) =>
+                    setUserForm({ ...userForm, email: e.target.value })
+                  }
+                  placeholder="Email"
+                  className="w-full p-2 border rounded"
+                />
+                <input
+                  type="text"
+                  value={userForm.role}
+                  onChange={(e) =>
+                    setUserForm({ ...userForm, role: e.target.value })
+                  }
+                  placeholder="Role"
+                  className="w-full p-2 border rounded"
+                />
+                <input
+                  type="text"
+                  value={userForm.phoneNumber}
+                  onChange={(e) =>
+                    setUserForm({ ...userForm, phoneNumber: e.target.value })
+                  }
+                  placeholder="Phone Number"
+                  className="w-full p-2 border rounded"
+                />
+              </div>
+              <div className="mt-6 flex justify-end space-x-2">
+                <button
+                  onClick={() => setShowUserModal(false)}
+                  className="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleUpdateUser}
+                  className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+                >
+                  Save
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Property Update Modal */}
+        {showPropertyModal && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
+              <h3 className="text-xl font-semibold mb-4">Update Property</h3>
+              <div className="space-y-4">
+                <input
+                  type="text"
+                  value={propertyForm.title}
+                  onChange={(e) =>
+                    setPropertyForm({ ...propertyForm, title: e.target.value })
+                  }
+                  placeholder="Title"
+                  className="w-full p-2 border rounded"
+                />
+                <input
+                  type="text"
+                  value={propertyForm.location}
+                  onChange={(e) =>
+                    setPropertyForm({
+                      ...propertyForm,
+                      location: e.target.value,
+                    })
+                  }
+                  placeholder="Location"
+                  className="w-full p-2 border rounded"
+                />
+                <input
+                  type="text"
+                  value={propertyForm.type}
+                  onChange={(e) =>
+                    setPropertyForm({ ...propertyForm, type: e.target.value })
+                  }
+                  placeholder="Type"
+                  className="w-full p-2 border rounded"
+                />
+                <input
+                  type="text"
+                  value={propertyForm.rent}
+                  onChange={(e) =>
+                    setPropertyForm({ ...propertyForm, rent: e.target.value })
+                  }
+                  placeholder="Rent"
+                  className="w-full p-2 border rounded"
+                />
+                <input
+                  type="text"
+                  value={propertyForm.rooms}
+                  onChange={(e) =>
+                    setPropertyForm({ ...propertyForm, rooms: e.target.value })
+                  }
+                  placeholder="Rooms"
+                  className="w-full p-2 border rounded"
+                />
+                <input
+                  type="text"
+                  value={propertyForm.bathrooms}
+                  onChange={(e) =>
+                    setPropertyForm({
+                      ...propertyForm,
+                      bathrooms: e.target.value,
+                    })
+                  }
+                  placeholder="Bathrooms"
+                  className="w-full p-2 border rounded"
+                />
+                <input
+                  type="text"
+                  value={propertyForm.area}
+                  onChange={(e) =>
+                    setPropertyForm({ ...propertyForm, area: e.target.value })
+                  }
+                  placeholder="Area"
+                  className="w-full p-2 border rounded"
+                />
+                <textarea
+                  value={propertyForm.description}
+                  onChange={(e) =>
+                    setPropertyForm({
+                      ...propertyForm,
+                      description: e.target.value,
+                    })
+                  }
+                  placeholder="Description"
+                  className="w-full p-2 border rounded"
+                />
+              </div>
+              <div className="mt-6 flex justify-end space-x-2">
+                <button
+                  onClick={() => setShowPropertyModal(false)}
+                  className="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleUpdateProperty}
+                  className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+                >
+                  Save
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Confirmation Modal */}
+        {showConfirmModal && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-sm">
+              <h3 className="text-xl font-semibold mb-4">Confirm Action</h3>
+              <p className="mb-4">
+                Are you sure you want to{" "}
+                {confirmAction === "deleteUser"
+                  ? "delete this user?"
+                  : confirmAction === "deleteProperty"
+                  ? "delete this property?"
+                  : confirmAction === "approveProperty"
+                  ? "approve this property?"
+                  : "reject this property?"}
+              </p>
+              <div className="flex justify-end space-x-2">
+                <button
+                  onClick={() => setShowConfirmModal(false)}
+                  className="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleConfirm}
+                  className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
+                >
+                  Confirm
+                </button>
+              </div>
+            </div>
           </div>
         )}
       </main>
