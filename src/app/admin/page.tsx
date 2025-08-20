@@ -194,7 +194,7 @@ const AdminDashboard: React.FC = () => {
               activeTab === "users"
                 ? "bg-blue-100 text-blue-600"
                 : "text-gray-600 hover:bg-gray-50"
-            }`}
+            } transition-colors duration-200`}
           >
             <User className="w-5 h-5 mr-2" />
             Users
@@ -205,7 +205,7 @@ const AdminDashboard: React.FC = () => {
               activeTab === "properties"
                 ? "bg-blue-100 text-blue-600"
                 : "text-gray-600 hover:bg-gray-50"
-            }`}
+            } transition-colors duration-200`}
           >
             <Home className="w-5 h-5 mr-2" />
             Properties
@@ -216,7 +216,7 @@ const AdminDashboard: React.FC = () => {
               activeTab === "approvals"
                 ? "bg-blue-100 text-blue-600"
                 : "text-gray-600 hover:bg-gray-50"
-            }`}
+            } transition-colors duration-200`}
           >
             <CheckCircle className="w-5 h-5 mr-2" />
             Approvals
@@ -273,13 +273,13 @@ const AdminDashboard: React.FC = () => {
                     <td className="px-6 py-4 whitespace-nowrap">
                       <button
                         onClick={() => handleEditUser(user)}
-                        className="text-blue-600 hover:text-blue-800 mr-2"
+                        className="text-blue-600 hover:text-blue-800 mr-2 transition-colors duration-200"
                       >
                         Edit
                       </button>
                       <button
                         onClick={() => openConfirmModal("deleteUser", user._id)}
-                        className="text-red-600 hover:text-red-800"
+                        className="text-red-600 hover:text-red-800 transition-colors duration-200"
                       >
                         Delete
                       </button>
@@ -332,7 +332,7 @@ const AdminDashboard: React.FC = () => {
                     <td className="px-6 py-4 whitespace-nowrap">
                       <button
                         onClick={() => handleEditProperty(property)}
-                        className="text-blue-600 hover:text-blue-800 mr-2"
+                        className="text-blue-600 hover:text-blue-800 mr-2 transition-colors duration-200"
                       >
                         Edit
                       </button>
@@ -340,7 +340,7 @@ const AdminDashboard: React.FC = () => {
                         onClick={() =>
                           openConfirmModal("deleteProperty", property._id)
                         }
-                        className="text-red-600 hover:text-red-800"
+                        className="text-red-600 hover:text-red-800 transition-colors duration-200"
                       >
                         Delete
                       </button>
@@ -401,7 +401,7 @@ const AdminDashboard: React.FC = () => {
                             onClick={() =>
                               openConfirmModal("approveProperty", property._id)
                             }
-                            className="text-green-600 hover:text-green-800 mr-2"
+                            className="text-green-600 hover:text-green-800 mr-2 transition-colors duration-200"
                           >
                             Approve
                           </button>
@@ -409,7 +409,7 @@ const AdminDashboard: React.FC = () => {
                             onClick={() =>
                               openConfirmModal("rejectProperty", property._id)
                             }
-                            className="text-red-600 hover:text-red-800"
+                            className="text-red-600 hover:text-red-800 transition-colors duration-200"
                           >
                             Reject
                           </button>
@@ -425,57 +425,79 @@ const AdminDashboard: React.FC = () => {
 
         {/* User Update Modal */}
         {showUserModal && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-            <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
-              <h3 className="text-xl font-semibold mb-4">Update User</h3>
-              <div className="space-y-4">
-                <input
-                  type="text"
-                  value={userForm.fullName}
-                  onChange={(e) =>
-                    setUserForm({ ...userForm, fullName: e.target.value })
-                  }
-                  placeholder="Full Name"
-                  className="w-full p-2 border rounded"
-                />
-                <input
-                  type="email"
-                  value={userForm.email}
-                  onChange={(e) =>
-                    setUserForm({ ...userForm, email: e.target.value })
-                  }
-                  placeholder="Email"
-                  className="w-full p-2 border rounded"
-                />
-                <input
-                  type="text"
-                  value={userForm.role}
-                  onChange={(e) =>
-                    setUserForm({ ...userForm, role: e.target.value })
-                  }
-                  placeholder="Role"
-                  className="w-full p-2 border rounded"
-                />
-                <input
-                  type="text"
-                  value={userForm.phoneNumber}
-                  onChange={(e) =>
-                    setUserForm({ ...userForm, phoneNumber: e.target.value })
-                  }
-                  placeholder="Phone Number"
-                  className="w-full p-2 border rounded"
-                />
+          <div className="fixed inset-0 backdrop-blur-sm flex items-center justify-center z-50 transition-opacity duration-300">
+            <div className="bg-white p-8 rounded-2xl shadow-2xl w-full max-w-lg transform transition-all duration-300 scale-100 hover:scale-105">
+              <h3 className="text-2xl font-bold text-gray-800 mb-6">
+                Update User
+              </h3>
+              <div className="space-y-5">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Full Name
+                  </label>
+                  <input
+                    type="text"
+                    value={userForm.fullName}
+                    onChange={(e) =>
+                      setUserForm({ ...userForm, fullName: e.target.value })
+                    }
+                    placeholder="Full Name"
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-200"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Email
+                  </label>
+                  <input
+                    type="email"
+                    value={userForm.email}
+                    onChange={(e) =>
+                      setUserForm({ ...userForm, email: e.target.value })
+                    }
+                    placeholder="Email"
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-200"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Role
+                  </label>
+                  <input
+                    type="text"
+                    value={userForm.role}
+                    onChange={(e) =>
+                      setUserForm({ ...userForm, role: e.target.value })
+                    }
+                    placeholder="Role"
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-200"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Phone Number
+                  </label>
+                  <input
+                    type="text"
+                    value={userForm.phoneNumber}
+                    onChange={(e) =>
+                      setUserForm({ ...userForm, phoneNumber: e.target.value })
+                    }
+                    placeholder="Phone Number"
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-200"
+                  />
+                </div>
               </div>
-              <div className="mt-6 flex justify-end space-x-2">
+              <div className="mt-8 flex justify-end space-x-3">
                 <button
                   onClick={() => setShowUserModal(false)}
-                  className="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300"
+                  className="px-5 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors duration-200"
                 >
                   Cancel
                 </button>
                 <button
                   onClick={handleUpdateUser}
-                  className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+                  className="px-5 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200"
                 >
                   Save
                 </button>
@@ -486,101 +508,149 @@ const AdminDashboard: React.FC = () => {
 
         {/* Property Update Modal */}
         {showPropertyModal && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-            <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
-              <h3 className="text-xl font-semibold mb-4">Update Property</h3>
-              <div className="space-y-4">
-                <input
-                  type="text"
-                  value={propertyForm.title}
-                  onChange={(e) =>
-                    setPropertyForm({ ...propertyForm, title: e.target.value })
-                  }
-                  placeholder="Title"
-                  className="w-full p-2 border rounded"
-                />
-                <input
-                  type="text"
-                  value={propertyForm.location}
-                  onChange={(e) =>
-                    setPropertyForm({
-                      ...propertyForm,
-                      location: e.target.value,
-                    })
-                  }
-                  placeholder="Location"
-                  className="w-full p-2 border rounded"
-                />
-                <input
-                  type="text"
-                  value={propertyForm.type}
-                  onChange={(e) =>
-                    setPropertyForm({ ...propertyForm, type: e.target.value })
-                  }
-                  placeholder="Type"
-                  className="w-full p-2 border rounded"
-                />
-                <input
-                  type="text"
-                  value={propertyForm.rent}
-                  onChange={(e) =>
-                    setPropertyForm({ ...propertyForm, rent: e.target.value })
-                  }
-                  placeholder="Rent"
-                  className="w-full p-2 border rounded"
-                />
-                <input
-                  type="text"
-                  value={propertyForm.rooms}
-                  onChange={(e) =>
-                    setPropertyForm({ ...propertyForm, rooms: e.target.value })
-                  }
-                  placeholder="Rooms"
-                  className="w-full p-2 border rounded"
-                />
-                <input
-                  type="text"
-                  value={propertyForm.bathrooms}
-                  onChange={(e) =>
-                    setPropertyForm({
-                      ...propertyForm,
-                      bathrooms: e.target.value,
-                    })
-                  }
-                  placeholder="Bathrooms"
-                  className="w-full p-2 border rounded"
-                />
-                <input
-                  type="text"
-                  value={propertyForm.area}
-                  onChange={(e) =>
-                    setPropertyForm({ ...propertyForm, area: e.target.value })
-                  }
-                  placeholder="Area"
-                  className="w-full p-2 border rounded"
-                />
-                <textarea
-                  value={propertyForm.description}
-                  onChange={(e) =>
-                    setPropertyForm({
-                      ...propertyForm,
-                      description: e.target.value,
-                    })
-                  }
-                  placeholder="Description"
-                  className="w-full p-2 border rounded"
-                />
+          <div className="fixed inset-0  backdrop-blur-sm flex items-center justify-center z-50 transition-opacity duration-300">
+            <div className="bg-white p-8 rounded-2xl shadow-2xl w-full max-w-lg transform transition-all duration-300 scale-100 hover:scale-105">
+              <h3 className="text-2xl font-bold text-gray-800 mb-6">
+                Update Property
+              </h3>
+              <div className="space-y-5">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Title
+                  </label>
+                  <input
+                    type="text"
+                    value={propertyForm.title}
+                    onChange={(e) =>
+                      setPropertyForm({
+                        ...propertyForm,
+                        title: e.target.value,
+                      })
+                    }
+                    placeholder="Title"
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-200"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Location
+                  </label>
+                  <input
+                    type="text"
+                    value={propertyForm.location}
+                    onChange={(e) =>
+                      setPropertyForm({
+                        ...propertyForm,
+                        location: e.target.value,
+                      })
+                    }
+                    placeholder="Location"
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-200"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Type
+                  </label>
+                  <input
+                    type="text"
+                    value={propertyForm.type}
+                    onChange={(e) =>
+                      setPropertyForm({ ...propertyForm, type: e.target.value })
+                    }
+                    placeholder="Type"
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-200"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Rent
+                  </label>
+                  <input
+                    type="text"
+                    value={propertyForm.rent}
+                    onChange={(e) =>
+                      setPropertyForm({ ...propertyForm, rent: e.target.value })
+                    }
+                    placeholder="Rent"
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-200"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Rooms
+                  </label>
+                  <input
+                    type="text"
+                    value={propertyForm.rooms}
+                    onChange={(e) =>
+                      setPropertyForm({
+                        ...propertyForm,
+                        rooms: e.target.value,
+                      })
+                    }
+                    placeholder="Rooms"
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-200"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Bathrooms
+                  </label>
+                  <input
+                    type="text"
+                    value={propertyForm.bathrooms}
+                    onChange={(e) =>
+                      setPropertyForm({
+                        ...propertyForm,
+                        bathrooms: e.target.value,
+                      })
+                    }
+                    placeholder="Bathrooms"
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-200"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Area
+                  </label>
+                  <input
+                    type="text"
+                    value={propertyForm.area}
+                    onChange={(e) =>
+                      setPropertyForm({ ...propertyForm, area: e.target.value })
+                    }
+                    placeholder="Area"
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-200"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Description
+                  </label>
+                  <textarea
+                    value={propertyForm.description}
+                    onChange={(e) =>
+                      setPropertyForm({
+                        ...propertyForm,
+                        description: e.target.value,
+                      })
+                    }
+                    placeholder="Description"
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-200 resize-none h-24"
+                  />
+                </div>
               </div>
-              <div className="mt-6 flex justify-end space-x-2">
+              <div className="mt-8 flex justify-end space-x-3">
                 <button
                   onClick={() => setShowPropertyModal(false)}
-                  className="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300"
+                  className="px-5 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors duration-200"
                 >
                   Cancel
                 </button>
                 <button
                   onClick={handleUpdateProperty}
-                  className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+                  className="px-5 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200"
                 >
                   Save
                 </button>
@@ -591,10 +661,12 @@ const AdminDashboard: React.FC = () => {
 
         {/* Confirmation Modal */}
         {showConfirmModal && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-            <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-sm">
-              <h3 className="text-xl font-semibold mb-4">Confirm Action</h3>
-              <p className="mb-4">
+          <div className="fixed inset-0  backdrop-blur-sm flex items-center justify-center z-50 transition-opacity duration-300">
+            <div className="bg-white p-8 rounded-2xl shadow-2xl w-full max-w-sm transform transition-all duration-300 scale-100 hover:scale-105">
+              <h3 className="text-2xl font-bold text-gray-800 mb-4">
+                Confirm Action
+              </h3>
+              <p className="text-gray-600 mb-6">
                 Are you sure you want to{" "}
                 {confirmAction === "deleteUser"
                   ? "delete this user?"
@@ -604,16 +676,16 @@ const AdminDashboard: React.FC = () => {
                   ? "approve this property?"
                   : "reject this property?"}
               </p>
-              <div className="flex justify-end space-x-2">
+              <div className="flex justify-end space-x-3">
                 <button
                   onClick={() => setShowConfirmModal(false)}
-                  className="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300"
+                  className="px-5 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors duration-200"
                 >
                   Cancel
                 </button>
                 <button
                   onClick={handleConfirm}
-                  className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
+                  className="px-5 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors duration-200"
                 >
                   Confirm
                 </button>
