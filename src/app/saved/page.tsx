@@ -20,7 +20,7 @@ const sampleProperties = [
     images: [],
   },
   {
-    _id: "2",
+    _id: "68a3886671b178ac8b0ed95f",
     title: "Bachelor Apartment",
     location: "Sonadanga",
     type: "Bachelor",
@@ -58,8 +58,10 @@ export default function SavedProperties() {
   useEffect(() => {
     // Load saved properties from localStorage
     const saved = localStorage.getItem("savedProperties");
+
     if (saved) {
       const savedIds = JSON.parse(saved);
+      console.log(savedIds);
       setSavedProperties(savedIds);
 
       // Filter properties that are saved

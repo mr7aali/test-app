@@ -1,14 +1,182 @@
 "use client";
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { isLoggedIn, logOutUser } from "@/services/auth.service";
 import { usePathname } from "next/navigation";
+import {
+  Home,
+  Search,
+  PlusCircle,
+  Heart,
+  User,
+  LogIn,
+  LogOut,
+  Sun,
+  Moon,
+  Menu,
+  X,
+} from "lucide-react";
+import { isLoggedIn, logOutUser } from "@/services/auth.service";
 
+// Logo Component
+const Logo = () => (
+  <Link href="/" className="flex items-center space-x-3 group">
+    <div className="w-12 h-12 md:w-12 md:h-12 bg-gradient-to-r from-purple-600 to-blue-600 rounded-2xl flex items-center justify-center transform group-hover:scale-105 transition-transform">
+      <Home className="w-5 h-5 md:w-6 md:h-6 text-white" />
+    </div>
+    <span className="font-['Pacifico'] text-xl md:text-2xl bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent group-hover:from-purple-500 group-hover:to-blue-500 transition-all">
+      Place Arena
+    </span>
+  </Link>
+);
+
+// Theme Toggle Component
+const ThemeToggle = ({
+  isDarkMode,
+  toggleDarkMode,
+}: {
+  isDarkMode: boolean;
+  toggleDarkMode: () => void;
+}) => (
+  <button
+    onClick={toggleDarkMode}
+    className="w-9 h-9 md:w-10 md:h-10 flex items-center justify-center rounded-full bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+    aria-label="Toggle dark mode"
+  >
+    {isDarkMode ? (
+      <Sun className="w-5 h-5 text-gray-600 dark:text-gray-300" />
+    ) : (
+      <Moon className="w-5 h-5 text-gray-600 dark:text-gray-300" />
+    )}
+  </button>
+);
+
+// Nav Item Component
+const NavItem = ({
+  href,
+  icon: Icon,
+  label,
+  onClick,
+}: {
+  href: string;
+  icon: React.ComponentType<{ className?: string }>;
+  label: string;
+  onClick?: () => void;
+}) => (
+  <Link
+    href={href}
+    className="flex items-center space-x-2 px-4 py-3 text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg transition-colors font-medium"
+    onClick={onClick}
+  >
+    <Icon className="w-5 h-5" />
+    <span>{label}</span>
+  </Link>
+);
+
+// Auth Buttons Component
+const AuthButtons = ({
+  authChecked,
+  onLogout,
+}: {
+  authChecked: boolean;
+  onLogout: () => void;
+}) => (
+  <div className="flex items-center space-x-4">
+    {!authChecked ? (
+      <>
+        <NavItem href="/login" icon={LogIn} label="Login" />
+        <Link
+          href="/signup"
+          className="px-6 py-2 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-lg hover:from-purple-700 hover:to-blue-700 transition-all duration-300 font-medium"
+        >
+          Sign Up
+        </Link>
+      </>
+    ) : (
+      <Link
+        onClick={onLogout}
+        href="/login"
+        className="flex items-center space-x-2 px-6 py-2 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-lg hover:from-purple-700 hover:to-blue-700 transition-all duration-300 font-medium"
+      >
+        <LogOut className="w-5 h-5" />
+        <span>Log Out</span>
+      </Link>
+    )}
+  </div>
+);
+
+// Mobile Menu Toggle Component
+const MobileMenuToggle = ({
+  mobileMenuOpen,
+  setMobileMenuOpen,
+}: {
+  mobileMenuOpen: boolean;
+  setMobileMenuOpen: (open: boolean) => void;
+}) => (
+  <button
+    onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+    className="w-9 h-9 flex items-center justify-center rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+    aria-label="Toggle menu"
+  >
+    {mobileMenuOpen ? (
+      <X className="w-5 h-5 text-gray-600 dark:text-gray-300" />
+    ) : (
+      <Menu className="w-5 h-5 text-gray-600 dark:text-gray-300" />
+    )}
+  </button>
+);
+
+// Mobile Menu Component
+const MobileMenu = ({
+  mobileMenuOpen,
+  setMobileMenuOpen,
+  authChecked,
+  onLogout,
+}: {
+  mobileMenuOpen: boolean;
+  setMobileMenuOpen: (open: boolean) => void;
+  authChecked: boolean;
+  onLogout: () => void;
+}) =>
+  mobileMenuOpen && (
+    <div className="absolute top-full left-0 right-0 bg-white dark:bg-gray-900 border-b border-gray-200/50 dark:border-gray-800/50 shadow-lg z-[9999]">
+      <div className="px-4 py-4 space-y-2">
+        <NavItem
+          href="/properties"
+          icon={Search}
+          label="Browse Properties"
+          onClick={() => setMobileMenuOpen(false)}
+        />
+        <NavItem
+          href="/add-property"
+          icon={PlusCircle}
+          label="Add Property"
+          onClick={() => setMobileMenuOpen(false)}
+        />
+        <NavItem
+          href="/saved"
+          icon={Heart}
+          label="Saved Properties"
+          onClick={() => setMobileMenuOpen(false)}
+        />
+        <NavItem
+          href="/profile"
+          icon={User}
+          label="Profile"
+          onClick={() => setMobileMenuOpen(false)}
+        />
+        <div className="border-t border-gray-200/50 dark:border-gray-800/50 my-3"></div>
+        <AuthButtons authChecked={authChecked} onLogout={onLogout} />
+      </div>
+    </div>
+  );
+
+// Main Header Component
 export default function Header() {
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [authChecked, setAuthChecked] = useState(false);
   const pathname = usePathname();
+
   useEffect(() => {
     const logged = isLoggedIn();
     setAuthChecked(Boolean(logged));
@@ -19,218 +187,75 @@ export default function Header() {
     const systemPrefersDark = window.matchMedia(
       "(prefers-color-scheme: dark)"
     ).matches;
-
     const shouldBeDark =
       savedTheme === "dark" || (!savedTheme && systemPrefersDark);
     setIsDarkMode(shouldBeDark);
-
-    if (shouldBeDark) {
-      document.documentElement.classList.add("dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-    }
+    document.documentElement.classList.toggle("dark", shouldBeDark);
   }, []);
 
   const toggleDarkMode = () => {
     const newDarkMode = !isDarkMode;
     setIsDarkMode(newDarkMode);
-
-    if (newDarkMode) {
-      document.documentElement.classList.add("dark");
-      localStorage.setItem("theme", "dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-      localStorage.setItem("theme", "light");
-    }
+    document.documentElement.classList.toggle("dark", newDarkMode);
+    localStorage.setItem("theme", newDarkMode ? "dark" : "light");
   };
-  // useEffect(() => {
-  //   const result = isLoggedIn();
-  //   if (result) {
-  //     setIsLoggidIn(true);
-  //   } else {
-  //     setIsLoggidIn(false);
-  //   }
-  // }, []);
+
+  const handleLogout = () => {
+    logOutUser();
+    setMobileMenuOpen(false);
+  };
 
   return (
     <>
       {/* Desktop Header */}
-      <header className="hidden md:block bg-white dark:bg-gray-900 shadow-sm border-b border-gray-100 dark:border-gray-800">
-        <div className="w-full px-6 py-4">
+      <header className="hidden md:block bg-white dark:bg-gray-900 shadow-sm border-b border-gray-200/50 dark:border-gray-800/50">
+        <div className="max-w-7xl mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
-            <Link
-              href="/"
-              className="flex items-center space-x-2 cursor-pointer"
-            >
-              <div className="w-10 h-10 bg-gradient-to-r from-purple-600 to-blue-600 rounded-xl flex items-center justify-center">
-                <i className="ri-building-line text-white text-xl"></i>
-              </div>
-              <span className="font-[\'Pacifico\'] text-2xl bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
-                Place Arena
-              </span>
-            </Link>
-
-            {/* Desktop Navigation */}
-            <nav className="hidden md:flex items-center space-x-8">
-              <Link
-                href="/properties"
-                className="text-gray-700 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400 font-medium transition-colors cursor-pointer"
-              >
-                Browse Properties
-              </Link>
-              <Link
+            <Logo />
+            <nav className="hidden md:flex items-center space-x-10">
+              <NavItem href="/properties" icon={Search} label="Browse" />
+              <NavItem
                 href="/add-property"
-                className="text-gray-700 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400 font-medium transition-colors cursor-pointer"
-              >
-                Add Property
-              </Link>
-              <Link
-                href="/saved"
-                className="text-gray-700 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400 font-medium transition-colors cursor-pointer"
-              >
-                Saved
-              </Link>
-              <Link
-                href="/profile"
-                className="text-gray-700 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400 font-medium transition-colors cursor-pointer"
-              >
-                Profile
-              </Link>
+                icon={PlusCircle}
+                label="Add Property"
+              />
+              <NavItem href="/saved" icon={Heart} label="Saved" />
+              <NavItem href="/profile" icon={User} label="Profile" />
             </nav>
-
             <div className="flex items-center space-x-4">
-              <button
-                onClick={toggleDarkMode}
-                className="w-10 h-10 flex items-center justify-center rounded-full bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors cursor-pointer"
-              >
-                <i
-                  className={`${
-                    isDarkMode ? "ri-sun-line" : "ri-moon-line"
-                  } text-lg text-gray-600 dark:text-gray-300`}
-                ></i>
-              </button>
-              {!Boolean(authChecked) && (
-                <>
-                  <Link
-                    href="/login"
-                    className="px-4 py-2 text-purple-600 dark:text-purple-400 hover:bg-purple-50 dark:hover:bg-purple-900/20 rounded-lg transition-colors cursor-pointer whitespace-nowrap"
-                  >
-                    Login
-                  </Link>
-                  <Link
-                    href="/signup"
-                    className="px-6 py-2 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-lg hover:from-purple-700 hover:to-blue-700 transition-all duration-300 cursor-pointer whitespace-nowrap"
-                  >
-                    Sign Up
-                  </Link>
-                </>
-              )}
-              {Boolean(authChecked) && (
-                <Link
-                  onClick={logOutUser}
-                  href="/login"
-                  className="px-6 py-2 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-lg hover:from-purple-700 hover:to-blue-700 transition-all duration-300 cursor-pointer whitespace-nowrap"
-                >
-                  Log Out
-                </Link>
-              )}
+              <ThemeToggle
+                isDarkMode={isDarkMode}
+                toggleDarkMode={toggleDarkMode}
+              />
+              <AuthButtons authChecked={authChecked} onLogout={handleLogout} />
             </div>
           </div>
         </div>
       </header>
 
       {/* Mobile Header */}
-      <header className="md:hidden bg-white dark:bg-gray-900 shadow-sm border-b border-gray-100 dark:border-gray-800 relative">
+      <header className="md:hidden bg-white dark:bg-gray-900 shadow-sm border-b border-gray-200/50 dark:border-gray-800/50 relative">
         <div className="px-4 py-3">
           <div className="flex items-center justify-between">
-            <Link
-              href="/"
-              className="flex items-center space-x-2 cursor-pointer"
-            >
-              <div className="w-8 h-8 bg-gradient-to-r from-purple-600 to-blue-600 rounded-lg flex items-center justify-center">
-                <i className="ri-building-line text-white text-sm"></i>
-              </div>
-              <span className="font-[\'Pacifico\'] text-lg bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
-                Place Arena
-              </span>
-            </Link>
-
+            <Logo />
             <div className="flex items-center space-x-2">
-              <button
-                onClick={toggleDarkMode}
-                className="w-8 h-8 flex items-center justify-center rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors cursor-pointer"
-              >
-                <i
-                  className={`${
-                    isDarkMode ? "ri-sun-line" : "ri-moon-line"
-                  } text-sm text-gray-600 dark:text-gray-300`}
-                ></i>
-              </button>
-
-              <button
-                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                className="w-8 h-8 flex items-center justify-center rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors cursor-pointer"
-              >
-                <i
-                  className={`${
-                    mobileMenuOpen ? "ri-close-line" : "ri-menu-line"
-                  } text-sm text-gray-600 dark:text-gray-300`}
-                ></i>
-              </button>
+              <ThemeToggle
+                isDarkMode={isDarkMode}
+                toggleDarkMode={toggleDarkMode}
+              />
+              <MobileMenuToggle
+                mobileMenuOpen={mobileMenuOpen}
+                setMobileMenuOpen={setMobileMenuOpen}
+              />
             </div>
           </div>
         </div>
-
-        {/* Mobile Menu - Fixed positioning and higher z-index */}
-        {mobileMenuOpen && (
-          <div className="absolute top-full left-0 right-0 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 shadow-lg z-[9999]">
-            <div className="px-4 py-2 space-y-1">
-              <Link
-                href="/properties"
-                className="block px-4 py-3 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg transition-colors cursor-pointer"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                Browse Properties
-              </Link>
-              <Link
-                href="/add-property"
-                className="block px-4 py-3 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg transition-colors cursor-pointer"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                Add Property
-              </Link>
-              <Link
-                href="/saved"
-                className="block px-4 py-3 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg transition-colors cursor-pointer"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                Saved Properties
-              </Link>
-              <Link
-                href="/profile"
-                className="block px-4 py-3 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg transition-colors cursor-pointer"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                Profile
-              </Link>
-              <div className="border-t border-gray-200 dark:border-gray-700 my-2"></div>
-              <Link
-                href="/login"
-                className="block px-4 py-3 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg transition-colors cursor-pointer"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                Login
-              </Link>
-              <Link
-                href="/signup"
-                className="block px-4 py-3 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-lg hover:from-purple-700 hover:to-blue-700 transition-all duration-300 cursor-pointer text-center font-medium"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                Sign Up
-              </Link>
-            </div>
-          </div>
-        )}
+        <MobileMenu
+          mobileMenuOpen={mobileMenuOpen}
+          setMobileMenuOpen={setMobileMenuOpen}
+          authChecked={authChecked}
+          onLogout={handleLogout}
+        />
       </header>
     </>
   );
