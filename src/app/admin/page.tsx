@@ -185,9 +185,9 @@ const AdminDashboard: React.FC = () => {
 
   const buttonStyles = {
     primary:
-      "px-4 py-2 rounded-lg text-white font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2",
+      "px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg text-white font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 text-sm sm:text-base",
     secondary:
-      "px-4 py-2 rounded-lg text-gray-700 font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2",
+      "px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg text-gray-700 font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 text-sm sm:text-base",
     edit: "bg-blue-600 hover:bg-blue-700 focus:ring-blue-500",
     delete: "bg-red-600 hover:bg-red-800 focus:ring-red-500",
     approve: "bg-green-600 hover:bg-green-700 focus:ring-green-500",
@@ -204,7 +204,9 @@ const AdminDashboard: React.FC = () => {
         } lg:translate-x-0`}
       >
         <div className="p-4 flex items-center justify-between">
-          <h1 className="text-2xl font-bold text-gray-800">Admin Dashboard</h1>
+          <h1 className="text-xl sm:text-2xl font-bold text-gray-800">
+            Admin Dashboard
+          </h1>
           <button className="lg:hidden" onClick={toggleSidebar}>
             <X className="w-6 h-6 text-gray-600" />
           </button>
@@ -219,7 +221,7 @@ const AdminDashboard: React.FC = () => {
               activeTab === "users"
                 ? "bg-blue-100 text-blue-600"
                 : "text-gray-600 hover:bg-gray-50"
-            } transition-colors duration-200`}
+            } transition-colors duration-200 text-sm sm:text-base`}
           >
             <User className="w-5 h-5 mr-2" />
             Users
@@ -233,7 +235,7 @@ const AdminDashboard: React.FC = () => {
               activeTab === "properties"
                 ? "bg-blue-100 text-blue-600"
                 : "text-gray-600 hover:bg-gray-50"
-            } transition-colors duration-200`}
+            } transition-colors duration-200 text-sm sm:text-base`}
           >
             <Home className="w-5 h-5 mr-2" />
             Properties
@@ -247,7 +249,7 @@ const AdminDashboard: React.FC = () => {
               activeTab === "approvals"
                 ? "bg-blue-100 text-blue-600"
                 : "text-gray-600 hover:bg-gray-50"
-            } transition-colors duration-200`}
+            } transition-colors duration-200 text-sm sm:text-base`}
           >
             <CheckCircle className="w-5 h-5 mr-2" />
             Approvals
@@ -258,7 +260,7 @@ const AdminDashboard: React.FC = () => {
       {/* Main Content */}
       <main className="flex-1 p-4 sm:p-6 lg:p-8 overflow-auto">
         <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl sm:text-3xl font-semibold text-gray-800">
+          <h2 className="text-xl sm:text-2xl lg:text-3xl font-semibold text-gray-800">
             {activeTab === "users"
               ? "User Management"
               : activeTab === "properties"
@@ -546,11 +548,11 @@ const AdminDashboard: React.FC = () => {
         {/* User Update Modal */}
         {showUserModal && (
           <div className="fixed inset-0 bg-black bg-opacity-30 backdrop-blur-sm flex items-center justify-center z-50 transition-opacity duration-300">
-            <div className="bg-white p-6 sm:p-8 rounded-2xl shadow-2xl w-full max-w-[90%] sm:max-w-lg transform transition-all duration-300 scale-100 hover:scale-105">
-              <h3 className="text-xl sm:text-2xl font-bold text-gray-800 mb-6">
+            <div className="bg-white p-4 sm:p-6 md:p-8 rounded-2xl shadow-2xl w-full max-w-[95%] sm:max-w-lg md:max-w-xl max-h-[90vh] overflow-y-auto">
+              <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-gray-800 mb-4 sm:mb-6">
                 Update User
               </h3>
-              <div className="space-y-5">
+              <div className="space-y-4 sm:space-y-5">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     Full Name
@@ -562,7 +564,7 @@ const AdminDashboard: React.FC = () => {
                       setUserForm({ ...userForm, fullName: e.target.value })
                     }
                     placeholder="Full Name"
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-200"
+                    className="w-full p-2 sm:p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-200 text-sm sm:text-base"
                   />
                 </div>
                 <div>
@@ -576,7 +578,7 @@ const AdminDashboard: React.FC = () => {
                       setUserForm({ ...userForm, email: e.target.value })
                     }
                     placeholder="Email"
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-200"
+                    className="w-full p-2 sm:p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-200 text-sm sm:text-base"
                   />
                 </div>
                 <div>
@@ -590,7 +592,7 @@ const AdminDashboard: React.FC = () => {
                       setUserForm({ ...userForm, role: e.target.value })
                     }
                     placeholder="Role"
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-200"
+                    className="w-full p-2 sm:p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-200 text-sm sm:text-base"
                   />
                 </div>
                 <div>
@@ -604,11 +606,11 @@ const AdminDashboard: React.FC = () => {
                       setUserForm({ ...userForm, phoneNumber: e.target.value })
                     }
                     placeholder="Phone Number"
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-200"
+                    className="w-full p-2 sm:p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-200 text-sm sm:text-base"
                   />
                 </div>
               </div>
-              <div className="mt-8 flex justify-end space-x-3">
+              <div className="mt-6 sm:mt-8 flex justify-end space-x-2 sm:space-x-3">
                 <button
                   onClick={() => setShowUserModal(false)}
                   className={`${buttonStyles.secondary} ${buttonStyles.cancel}`}
@@ -629,11 +631,11 @@ const AdminDashboard: React.FC = () => {
         {/* Property Update Modal */}
         {showPropertyModal && (
           <div className="fixed inset-0 bg-black bg-opacity-30 backdrop-blur-sm flex items-center justify-center z-50 transition-opacity duration-300">
-            <div className="bg-white p-6 sm:p-8 rounded-2xl shadow-2xl w-full max-w-[90%] md:max-w-3xl transform transition-all duration-300 scale-100 hover:scale-105">
-              <h3 className="text-xl sm:text-2xl font-bold text-gray-800 mb-6">
+            <div className="bg-white p-4 sm:p-6 md:p-8 rounded-2xl shadow-2xl w-full max-w-[95%] sm:max-w-2xl md:max-w-4xl max-h-[90vh] overflow-y-auto">
+              <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-gray-800 mb-4 sm:mb-6">
                 Update Property
               </h3>
-              <div className="grid md:grid-cols-2 gap-5">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     Title
@@ -648,7 +650,7 @@ const AdminDashboard: React.FC = () => {
                       })
                     }
                     placeholder="Title"
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-200"
+                    className="w-full p-2 sm:p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-200 text-sm sm:text-base"
                   />
                 </div>
                 <div>
@@ -665,7 +667,7 @@ const AdminDashboard: React.FC = () => {
                       })
                     }
                     placeholder="Location"
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-200"
+                    className="w-full p-2 sm:p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-200 text-sm sm:text-base"
                   />
                 </div>
                 <div>
@@ -679,7 +681,7 @@ const AdminDashboard: React.FC = () => {
                       setPropertyForm({ ...propertyForm, type: e.target.value })
                     }
                     placeholder="Type"
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-200"
+                    className="w-full p-2 sm:p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-200 text-sm sm:text-base"
                   />
                 </div>
                 <div>
@@ -693,7 +695,7 @@ const AdminDashboard: React.FC = () => {
                       setPropertyForm({ ...propertyForm, rent: e.target.value })
                     }
                     placeholder="Rent"
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-200"
+                    className="w-full p-2 sm:p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-200 text-sm sm:text-base"
                   />
                 </div>
                 <div>
@@ -710,7 +712,7 @@ const AdminDashboard: React.FC = () => {
                       })
                     }
                     placeholder="Rooms"
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-200"
+                    className="w-full p-2 sm:p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-200 text-sm sm:text-base"
                   />
                 </div>
                 <div>
@@ -727,7 +729,7 @@ const AdminDashboard: React.FC = () => {
                       })
                     }
                     placeholder="Bathrooms"
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-200"
+                    className="w-full p-2 sm:p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-200 text-sm sm:text-base"
                   />
                 </div>
                 <div>
@@ -741,10 +743,10 @@ const AdminDashboard: React.FC = () => {
                       setPropertyForm({ ...propertyForm, area: e.target.value })
                     }
                     placeholder="Area"
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-200"
+                    className="w-full p-2 sm:p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-200 text-sm sm:text-base"
                   />
                 </div>
-                <div className="md:col-span-2">
+                <div className="sm:col-span-2">
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     Description
                   </label>
@@ -757,11 +759,11 @@ const AdminDashboard: React.FC = () => {
                       })
                     }
                     placeholder="Description"
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-200 resize-none h-24"
+                    className="w-full p-2 sm:p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-200 resize-none h-24 text-sm sm:text-base"
                   />
                 </div>
               </div>
-              <div className="mt-8 flex justify-end space-x-3">
+              <div className="mt-6 sm:mt-8 flex justify-end space-x-2 sm:space-x-3">
                 <button
                   onClick={() => setShowPropertyModal(false)}
                   className={`${buttonStyles.secondary} ${buttonStyles.cancel}`}
@@ -782,11 +784,11 @@ const AdminDashboard: React.FC = () => {
         {/* Confirmation Modal */}
         {showConfirmModal && (
           <div className="fixed inset-0 bg-black bg-opacity-30 backdrop-blur-sm flex items-center justify-center z-50 transition-opacity duration-300">
-            <div className="bg-white p-6 sm:p-8 rounded-2xl shadow-2xl w-full max-w-[90%] sm:max-w-sm transform transition-all duration-300 scale-100 hover:scale-105">
-              <h3 className="text-xl sm:text-2xl font-bold text-gray-800 mb-4">
+            <div className="bg-white p-4 sm:p-6 md:p-8 rounded-2xl shadow-2xl w-full max-w-[95%] sm:max-w-md max-h-[90vh] overflow-y-auto">
+              <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-gray-800 mb-4 sm:mb-6">
                 Confirm Action
               </h3>
-              <p className="text-gray-600 mb-6 text-sm sm:text-base">
+              <p className="text-gray-600 mb-4 sm:mb-6 text-sm sm:text-base">
                 Are you sure you want to{" "}
                 {confirmAction === "deleteUser"
                   ? "delete this user?"
@@ -796,7 +798,7 @@ const AdminDashboard: React.FC = () => {
                   ? "approve this property?"
                   : "reject this property?"}
               </p>
-              <div className="flex justify-end space-x-3">
+              <div className="flex justify-end space-x-2 sm:space-x-3">
                 <button
                   onClick={() => setShowConfirmModal(false)}
                   className={`${buttonStyles.secondary} ${buttonStyles.cancel}`}
