@@ -1,8 +1,12 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Menu } from "lucide-react";
 import AdminSidebar from "@/components/adminPage/AdminSidebar";
 import { deleteUser, updateUser } from "./actions";
+import Loading from "../loading";
+import { getUserInfo } from "@/services/auth.service";
+import { useRouter } from "next/navigation";
+// import { useRouter } from "next/";
 
 interface IUser {
   _id: string;
@@ -95,7 +99,29 @@ const AdminDashboard = ({
     area: "",
     description: "",
   });
-
+  const router = useRouter();
+  const [authChecked, setAuthChecked] = useState(false);
+  useEffect(() => {
+    setAuthChecked(false);
+    const user = getUserInfo() as {
+      email: string;
+      sub: string;
+      role: "owner" | "admin";
+      iat: number;
+      exp: number;
+    };
+    console.log(user);
+    if (!user) {
+      router.push("/login");
+    }
+    if (user?.role !== "admin") {
+      router.push("/");
+    }
+    setAuthChecked(true);
+  }, [router]);
+  if (!authChecked) {
+    return <Loading />;
+  }
   const handleEditUser = async (user: IUser) => {
     setSelectedUser(user);
     setUserForm({
@@ -222,7 +248,7 @@ const AdminDashboard = ({
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
-                  {users.map((user) => (
+                  {users?.map((user) => (
                     <tr key={user._id}>
                       <td className="px-4 py-4 sm:px-6">
                         <div className="text-sm font-medium text-gray-900">
@@ -299,7 +325,7 @@ const AdminDashboard = ({
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
-                  {properties.map((property) => (
+                  {properties?.map((property) => (
                     <tr key={property._id}>
                       <td className="px-4 py-4 sm:px-6">
                         <div className="text-sm font-medium text-gray-900">
@@ -404,7 +430,7 @@ const AdminDashboard = ({
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
-                  {needApproveProperties.map((property) => (
+                  {needApproveProperties?.map((property) => (
                     <tr key={property._id}>
                       {/* {{title}} */}
                       <td className="px-4 py-4 sm:px-6">
