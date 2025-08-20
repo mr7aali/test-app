@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { Menu } from "lucide-react";
 import AdminSidebar from "@/components/adminPage/AdminSidebar";
-import { deleteUser } from "./actions";
+import { deleteUser, updateUser } from "./actions";
 
 interface IUser {
   _id: string;
@@ -37,19 +37,6 @@ interface PropertyData {
   updatedAt: string;
   isApproved: boolean;
 }
-
-// Mock data (replace with API calls in production)
-// const users: UserData[] = [
-//   {
-//     _id: "689ebf8e0b6295dc6d980457",
-//     fullName: "Aali",
-//     email: "talent@gmail.com",
-//     role: "owner",
-//     phoneNumber: "+8801967119057",
-//     createdAt: "2025-08-15T05:03:10.171Z",
-//     updatedAt: "2025-08-15T05:03:10.171Z",
-//   },
-// ];
 
 const properties: PropertyData[] = [
   {
@@ -114,7 +101,6 @@ const AdminDashboard = ({ users }: { users: IUser[] }) => {
   const [userForm, setUserForm] = useState({
     fullName: "",
     email: "",
-    role: "",
     phoneNumber: "",
   });
   const [propertyForm, setPropertyForm] = useState({
@@ -128,15 +114,18 @@ const AdminDashboard = ({ users }: { users: IUser[] }) => {
     description: "",
   });
 
-  const handleEditUser = (user: IUser) => {
+  const handleEditUser = async (user: IUser) => {
     setSelectedUser(user);
     setUserForm({
       fullName: user.fullName,
       email: user.email,
-      role: user.role,
       phoneNumber: user.phoneNumber,
     });
     setShowUserModal(true);
+
+    if (selectedUser?._id && selectedUser._id !== undefined) {
+      await updateUser({ id: selectedUser?._id, updatedData: userForm });
+    }
   };
 
   const handleEditProperty = (property: PropertyData) => {
@@ -153,9 +142,11 @@ const AdminDashboard = ({ users }: { users: IUser[] }) => {
     });
     setShowPropertyModal(true);
   };
+  console.log(selectedUser, "selected usr by ali");
+  const handleUpdateUser = async () => {
+    if (selectedUser?._id)
+      await updateUser({ id: selectedUser._id, updatedData: userForm });
 
-  const handleUpdateUser = () => {
-    console.log("Updating user:", userForm);
     setShowUserModal(false);
   };
 
@@ -167,7 +158,6 @@ const AdminDashboard = ({ users }: { users: IUser[] }) => {
   const handleConfirm = async () => {
     if (confirmAction === "deleteUser" && !!confirmId) {
       await deleteUser(confirmId);
-
       console.log(`Deleting user ${confirmId}`);
     } else if (confirmAction === "deleteProperty") {
       console.log(`Deleting property ${confirmId}`);
@@ -534,7 +524,7 @@ const AdminDashboard = ({ users }: { users: IUser[] }) => {
                     className="w-full p-2 sm:p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-200 text-sm sm:text-base"
                   />
                 </div>
-                <div>
+                {/* <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     Role
                   </label>
@@ -547,7 +537,7 @@ const AdminDashboard = ({ users }: { users: IUser[] }) => {
                     placeholder="Role"
                     className="w-full p-2 sm:p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-200 text-sm sm:text-base"
                   />
-                </div>
+                </div> */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     Phone Number
