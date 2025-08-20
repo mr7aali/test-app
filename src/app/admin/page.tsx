@@ -183,6 +183,18 @@ const AdminDashboard: React.FC = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
 
+  const buttonStyles = {
+    primary:
+      "px-4 py-2 rounded-lg text-white font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2",
+    secondary:
+      "px-4 py-2 rounded-lg text-gray-700 font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2",
+    edit: "bg-blue-600 hover:bg-blue-700 focus:ring-blue-500",
+    delete: "bg-red-600 hover:bg-red-800 focus:ring-red-500",
+    approve: "bg-green-600 hover:bg-green-700 focus:ring-green-500",
+    reject: "bg-red-600 hover:bg-red-800 focus:ring-red-500",
+    cancel: "bg-gray-200 hover:bg-gray-300 focus:ring-gray-400",
+  };
+
   return (
     <div className="flex min-h-screen bg-gray-100">
       {/* Sidebar */}
@@ -311,7 +323,7 @@ const AdminDashboard: React.FC = () => {
                       <td className="px-4 py-4 sm:px-6 whitespace-nowrap">
                         <button
                           onClick={() => handleEditUser(user)}
-                          className="text-blue-600 hover:text-blue-800 mr-2 transition-colors duration-200"
+                          className={`${buttonStyles.primary} ${buttonStyles.edit} mr-2`}
                         >
                           Edit
                         </button>
@@ -319,7 +331,7 @@ const AdminDashboard: React.FC = () => {
                           onClick={() =>
                             openConfirmModal("deleteUser", user._id)
                           }
-                          className="text-red-600 hover:text-red-800 transition-colors duration-200"
+                          className={`${buttonStyles.primary} ${buttonStyles.delete}`}
                         >
                           Delete
                         </button>
@@ -343,12 +355,15 @@ const AdminDashboard: React.FC = () => {
                       Title
                     </th>
                     <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider sm:px-6 hidden sm:table-cell">
-                      Location
+                      Picture
                     </th>
                     <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider sm:px-6 hidden md:table-cell">
-                      Rent
+                      Location
                     </th>
                     <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider sm:px-6 hidden lg:table-cell">
+                      Rent
+                    </th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider sm:px-6 hidden xl:table-cell">
                       Owner
                     </th>
                     <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider sm:px-6">
@@ -364,28 +379,42 @@ const AdminDashboard: React.FC = () => {
                           {property.title}
                         </div>
                         <div className="text-sm text-gray-500 sm:hidden">
-                          {property.location}
+                          <img
+                            src={property.images[0] || "/placeholder.jpg"}
+                            alt={property.title}
+                            className="w-16 h-16 object-cover rounded-lg mt-1"
+                          />
                         </div>
                         <div className="text-sm text-gray-500 md:hidden">
-                          ${property.rent}
+                          {property.location}
                         </div>
                         <div className="text-sm text-gray-500 lg:hidden">
+                          ${property.rent}
+                        </div>
+                        <div className="text-sm text-gray-500 xl:hidden">
                           {property.ownerId.fullName}
                         </div>
                       </td>
                       <td className="px-4 py-4 sm:px-6 hidden sm:table-cell">
-                        {property.location}
+                        <img
+                          src={property.images[0] || "/placeholder.jpg"}
+                          alt={property.title}
+                          className="w-16 h-16 object-cover rounded-lg"
+                        />
                       </td>
                       <td className="px-4 py-4 sm:px-6 hidden md:table-cell">
-                        ${property.rent}
+                        {property.location}
                       </td>
                       <td className="px-4 py-4 sm:px-6 hidden lg:table-cell">
+                        ${property.rent}
+                      </td>
+                      <td className="px-4 py-4 sm:px-6 hidden xl:table-cell">
                         {property.ownerId.fullName}
                       </td>
                       <td className="px-4 py-4 sm:px-6 whitespace-nowrap">
                         <button
                           onClick={() => handleEditProperty(property)}
-                          className="text-blue-600 hover:text-blue-800 mr-2 transition-colors duration-200"
+                          className={`${buttonStyles.primary} ${buttonStyles.edit} mr-2`}
                         >
                           Edit
                         </button>
@@ -393,7 +422,7 @@ const AdminDashboard: React.FC = () => {
                           onClick={() =>
                             openConfirmModal("deleteProperty", property._id)
                           }
-                          className="text-red-600 hover:text-red-800 transition-colors duration-200"
+                          className={`${buttonStyles.primary} ${buttonStyles.delete}`}
                         >
                           Delete
                         </button>
@@ -417,12 +446,15 @@ const AdminDashboard: React.FC = () => {
                       Title
                     </th>
                     <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider sm:px-6 hidden sm:table-cell">
-                      Location
+                      Picture
                     </th>
                     <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider sm:px-6 hidden md:table-cell">
-                      Owner
+                      Location
                     </th>
                     <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider sm:px-6 hidden lg:table-cell">
+                      Owner
+                    </th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider sm:px-6 hidden xl:table-cell">
                       Status
                     </th>
                     <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider sm:px-6">
@@ -438,12 +470,19 @@ const AdminDashboard: React.FC = () => {
                           {property.title}
                         </div>
                         <div className="text-sm text-gray-500 sm:hidden">
-                          {property.location}
+                          <img
+                            src={property.images[0] || "/placeholder.jpg"}
+                            alt={property.title}
+                            className="w-16 h-16 object-cover rounded-lg mt-1"
+                          />
                         </div>
                         <div className="text-sm text-gray-500 md:hidden">
-                          {property.ownerId.fullName}
+                          {property.location}
                         </div>
                         <div className="text-sm text-gray-500 lg:hidden">
+                          {property.ownerId.fullName}
+                        </div>
+                        <div className="text-sm text-gray-500 xl:hidden">
                           {property.isApproved ? (
                             <span className="text-green-600">Approved</span>
                           ) : (
@@ -452,12 +491,19 @@ const AdminDashboard: React.FC = () => {
                         </div>
                       </td>
                       <td className="px-4 py-4 sm:px-6 hidden sm:table-cell">
-                        {property.location}
+                        <img
+                          src={property.images[0] || "/placeholder.jpg"}
+                          alt={property.title}
+                          className="w-16 h-16 object-cover rounded-lg"
+                        />
                       </td>
                       <td className="px-4 py-4 sm:px-6 hidden md:table-cell">
-                        {property.ownerId.fullName}
+                        {property.location}
                       </td>
                       <td className="px-4 py-4 sm:px-6 hidden lg:table-cell">
+                        {property.ownerId.fullName}
+                      </td>
+                      <td className="px-4 py-4 sm:px-6 hidden xl:table-cell">
                         {property.isApproved ? (
                           <span className="text-green-600">Approved</span>
                         ) : (
@@ -474,7 +520,7 @@ const AdminDashboard: React.FC = () => {
                                   property._id
                                 )
                               }
-                              className="text-green-600 hover:text-green-800 mr-2 transition-colors duration-200"
+                              className={`${buttonStyles.primary} ${buttonStyles.approve} mr-2`}
                             >
                               Approve
                             </button>
@@ -482,7 +528,7 @@ const AdminDashboard: React.FC = () => {
                               onClick={() =>
                                 openConfirmModal("rejectProperty", property._id)
                               }
-                              className="text-red-600 hover:text-red-800 transition-colors duration-200"
+                              className={`${buttonStyles.primary} ${buttonStyles.reject}`}
                             >
                               Reject
                             </button>
@@ -565,13 +611,13 @@ const AdminDashboard: React.FC = () => {
               <div className="mt-8 flex justify-end space-x-3">
                 <button
                   onClick={() => setShowUserModal(false)}
-                  className="px-5 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors duration-200"
+                  className={`${buttonStyles.secondary} ${buttonStyles.cancel}`}
                 >
                   Cancel
                 </button>
                 <button
                   onClick={handleUpdateUser}
-                  className="px-5 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200"
+                  className={`${buttonStyles.primary} ${buttonStyles.edit}`}
                 >
                   Save
                 </button>
@@ -583,11 +629,11 @@ const AdminDashboard: React.FC = () => {
         {/* Property Update Modal */}
         {showPropertyModal && (
           <div className="fixed inset-0 bg-black bg-opacity-30 backdrop-blur-sm flex items-center justify-center z-50 transition-opacity duration-300">
-            <div className="bg-white p-6 sm:p-8 rounded-2xl shadow-2xl w-full max-w-[90%] sm:max-w-lg transform transition-all duration-300 scale-100 hover:scale-105">
+            <div className="bg-white p-6 sm:p-8 rounded-2xl shadow-2xl w-full max-w-[90%] md:max-w-3xl transform transition-all duration-300 scale-100 hover:scale-105">
               <h3 className="text-xl sm:text-2xl font-bold text-gray-800 mb-6">
                 Update Property
               </h3>
-              <div className="space-y-5">
+              <div className="grid md:grid-cols-2 gap-5">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     Title
@@ -698,7 +744,7 @@ const AdminDashboard: React.FC = () => {
                     className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-200"
                   />
                 </div>
-                <div>
+                <div className="md:col-span-2">
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     Description
                   </label>
@@ -718,13 +764,13 @@ const AdminDashboard: React.FC = () => {
               <div className="mt-8 flex justify-end space-x-3">
                 <button
                   onClick={() => setShowPropertyModal(false)}
-                  className="px-5 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors duration-200"
+                  className={`${buttonStyles.secondary} ${buttonStyles.cancel}`}
                 >
                   Cancel
                 </button>
                 <button
                   onClick={handleUpdateProperty}
-                  className="px-5 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200"
+                  className={`${buttonStyles.primary} ${buttonStyles.edit}`}
                 >
                   Save
                 </button>
@@ -753,13 +799,13 @@ const AdminDashboard: React.FC = () => {
               <div className="flex justify-end space-x-3">
                 <button
                   onClick={() => setShowConfirmModal(false)}
-                  className="px-5 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors duration-200"
+                  className={`${buttonStyles.secondary} ${buttonStyles.cancel}`}
                 >
                   Cancel
                 </button>
                 <button
                   onClick={handleConfirm}
-                  className="px-5 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors duration-200"
+                  className={`${buttonStyles.primary} ${buttonStyles.delete}`}
                 >
                   Confirm
                 </button>
