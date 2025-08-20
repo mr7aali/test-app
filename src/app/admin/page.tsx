@@ -1,7 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import Link from "next/link";
-import { User, Home } from "lucide-react";
+import { User, Home, CheckCircle } from "lucide-react";
 
 interface UserData {
   _id: string;
@@ -34,6 +33,7 @@ interface PropertyData {
   images: string[];
   createdAt: string;
   updatedAt: string;
+  isApproved: boolean;
 }
 
 // Mock data (replace with API calls in production)
@@ -73,11 +73,24 @@ const properties: PropertyData[] = [
     ],
     createdAt: "2025-08-17T18:52:45.562Z",
     updatedAt: "2025-08-17T18:52:45.562Z",
+    isApproved: false,
   },
 ];
 
 const AdminDashboard: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<"users" | "properties">("users");
+  const [activeTab, setActiveTab] = useState<
+    "users" | "properties" | "approvals"
+  >("users");
+
+  const handleApprove = (propertyId: string) => {
+    // Implement approval logic (e.g., API call to update isApproved)
+    console.log(`Approving property ${propertyId}`);
+  };
+
+  const handleReject = (propertyId: string) => {
+    // Implement rejection logic (e.g., API call to update or delete)
+    console.log(`Rejecting property ${propertyId}`);
+  };
 
   return (
     <div className="flex h-screen bg-gray-100">
@@ -109,13 +122,28 @@ const AdminDashboard: React.FC = () => {
             <Home className="w-5 h-5 mr-2" />
             Properties
           </button>
+          <button
+            onClick={() => setActiveTab("approvals")}
+            className={`flex items-center w-full p-4 text-left ${
+              activeTab === "approvals"
+                ? "bg-blue-100 text-blue-600"
+                : "text-gray-600 hover:bg-gray-50"
+            }`}
+          >
+            <CheckCircle className="w-5 h-5 mr-2" />
+            Approvals
+          </button>
         </nav>
       </aside>
 
       {/* Main Content */}
       <main className="flex-1 p-8 overflow-auto">
         <h2 className="text-3xl font-semibold text-gray-800 mb-6">
-          {activeTab === "users" ? "User Management" : "Property Management"}
+          {activeTab === "users"
+            ? "User Management"
+            : activeTab === "properties"
+            ? "Property Management"
+            : "Property Approvals"}
         </h2>
 
         {/* Users Table */}
@@ -214,6 +242,73 @@ const AdminDashboard: React.FC = () => {
                       <button className="text-red-600 hover:text-red-800">
                         Delete
                       </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+
+        {/* Approvals Table */}
+        {activeTab === "approvals" && (
+          <div className="bg-white shadow-md rounded-lg overflow-hidden">
+            <table className="min-w-full divide-y divide-gray-200">
+              <thead className="bg-gray-50">
+                <tr>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Title
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Location
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Owner
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Status
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Actions
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="bg-white divide-y divide-gray-200">
+                {properties.map((property) => (
+                  <tr key={property._id}>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      {property.title}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      {property.location}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      {property.ownerId.fullName}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      {property.isApproved ? (
+                        <span className="text-green-600">Approved</span>
+                      ) : (
+                        <span className="text-yellow-600">Pending</span>
+                      )}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      {!property.isApproved && (
+                        <>
+                          <button
+                            onClick={() => handleApprove(property._id)}
+                            className="text-green-600 hover:text-green-800 mr-2"
+                          >
+                            Approve
+                          </button>
+                          <button
+                            onClick={() => handleReject(property._id)}
+                            className="text-red-600 hover:text-red-800"
+                          >
+                            Reject
+                          </button>
+                        </>
+                      )}
                     </td>
                   </tr>
                 ))}
