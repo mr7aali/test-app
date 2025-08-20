@@ -7,22 +7,27 @@ export const updateUser = async ({
   updatedData,
 }: {
   id: string;
-  updatedData: any;
+  updatedData: Record<string, unknown>;
 }) => {
   const res = await fetch(`${process.env.BACKEND_URL}/api/v1/users/${id}`, {
-    method: "PUT", // ✅ use PUT for update
+    method: "PUT",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify(updatedData), // ✅ send updated data
-    cache: "no-store", // ensure fresh data
+    body: JSON.stringify(updatedData),
+    cache: "no-store",
   });
 
   if (!res.ok) {
     throw new Error(`Failed to update user: ${res.statusText}`);
   }
 
-  return res.json();
+  const data = await res.json();
+
+  // ✅ Revalidate "users" cache after success
+  revalidateTag("users");
+
+  return data;
 };
 
 export const deleteUser = async (id: string) => {
@@ -35,5 +40,10 @@ export const deleteUser = async (id: string) => {
     throw new Error(`Failed to delete user: ${res.statusText}`);
   }
 
-  return res.json();
+  const data = await res.json();
+
+  // ✅ Revalidate "users" cache after success
+  revalidateTag("users");
+
+  return data;
 };

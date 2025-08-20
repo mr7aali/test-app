@@ -3,7 +3,7 @@ import AdminDashboard from "./AdminDashboard";
 const AdminPage = async () => {
   const res = await fetch(`${process.env.BACKEND_URL}/api/v1/users`, {
     next: {
-      tags: ["user"],
+      tags: ["users"],
     },
   });
   const users = await res.json();

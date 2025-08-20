@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import { Menu } from "lucide-react";
 import AdminSidebar from "@/components/adminPage/AdminSidebar";
+import { deleteUser } from "./actions";
 
 interface IUser {
   _id: string;
@@ -99,7 +100,7 @@ const AdminDashboard = ({ users }: { users: IUser[] }) => {
   const [selectedProperty, setSelectedProperty] = useState<PropertyData | null>(
     null
   );
-  console.log(selectedUser, "selected user");
+
   const [confirmAction, setConfirmAction] = useState<
     | "deleteUser"
     | "deleteProperty"
@@ -163,8 +164,10 @@ const AdminDashboard = ({ users }: { users: IUser[] }) => {
     setShowPropertyModal(false);
   };
 
-  const handleConfirm = () => {
-    if (confirmAction === "deleteUser") {
+  const handleConfirm = async () => {
+    if (confirmAction === "deleteUser" && !!confirmId) {
+      await deleteUser(confirmId);
+
       console.log(`Deleting user ${confirmId}`);
     } else if (confirmAction === "deleteProperty") {
       console.log(`Deleting property ${confirmId}`);
