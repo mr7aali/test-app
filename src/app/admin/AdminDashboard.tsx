@@ -14,7 +14,7 @@ interface IUser {
   updatedAt: string;
 }
 
-interface PropertyData {
+interface IProperty {
   _id: string;
   title: string;
   ownerId: {
@@ -38,33 +38,33 @@ interface PropertyData {
   isApproved: boolean;
 }
 
-const properties: PropertyData[] = [
-  {
-    _id: "68a224fd75df5ee4e198bc43",
-    title: "This",
-    ownerId: {
-      _id: "689ebf8e0b6295dc6d980457",
-      fullName: "Aali",
-      email: "talent@gmail.com",
-      role: "owner",
-      phoneNumber: "+8801967119057",
-    },
-    location: "Sonadanga",
-    type: "Bachelor",
-    rent: "34",
-    rooms: "3",
-    bathrooms: "3",
-    area: "12321",
-    description: "Thi si th eproperty",
-    features: ["Gym Access", "Semi-Furnished"],
-    images: [
-      "https://res.cloudinary.com/dzrlmvvzu/image/upload/v1755456380/t7yjhzzxfbzmskpaalsa.png",
-    ],
-    createdAt: "2025-08-17T18:52:45.562Z",
-    updatedAt: "2025-08-17T18:52:45.562Z",
-    isApproved: false,
-  },
-];
+// const properties: PropertyData[] = [
+//   {
+//     _id: "68a224fd75df5ee4e198bc43",
+//     title: "This",
+//     ownerId: {
+//       _id: "689ebf8e0b6295dc6d980457",
+//       fullName: "Aali",
+//       email: "talent@gmail.com",
+//       role: "owner",
+//       phoneNumber: "+8801967119057",
+//     },
+//     location: "Sonadanga",
+//     type: "Bachelor",
+//     rent: "34",
+//     rooms: "3",
+//     bathrooms: "3",
+//     area: "12321",
+//     description: "Thi si th eproperty",
+//     features: ["Gym Access", "Semi-Furnished"],
+//     images: [
+//       "https://res.cloudinary.com/dzrlmvvzu/image/upload/v1755456380/t7yjhzzxfbzmskpaalsa.png",
+//     ],
+//     createdAt: "2025-08-17T18:52:45.562Z",
+//     updatedAt: "2025-08-17T18:52:45.562Z",
+//     isApproved: false,
+//   },
+// ];
 export const buttonStyles = {
   primary:
     "px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg text-white font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 text-sm sm:text-base",
@@ -76,7 +76,13 @@ export const buttonStyles = {
   reject: "bg-red-600 hover:bg-red-800 focus:ring-red-500",
   cancel: "bg-gray-200 hover:bg-gray-300 focus:ring-gray-400",
 };
-const AdminDashboard = ({ users }: { users: IUser[] }) => {
+const AdminDashboard = ({
+  users,
+  properties,
+}: {
+  users: IUser[];
+  properties: IProperty[];
+}) => {
   const [activeTab, setActiveTab] = useState<
     "users" | "properties" | "approvals"
   >("users");
@@ -84,7 +90,7 @@ const AdminDashboard = ({ users }: { users: IUser[] }) => {
   const [showPropertyModal, setShowPropertyModal] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [selectedUser, setSelectedUser] = useState<IUser | null>(null);
-  const [selectedProperty, setSelectedProperty] = useState<PropertyData | null>(
+  const [selectedProperty, setSelectedProperty] = useState<IProperty | null>(
     null
   );
 
@@ -128,7 +134,7 @@ const AdminDashboard = ({ users }: { users: IUser[] }) => {
     }
   };
 
-  const handleEditProperty = (property: PropertyData) => {
+  const handleEditProperty = (property: IProperty) => {
     setSelectedProperty(property);
     setPropertyForm({
       title: property.title,

@@ -1,16 +1,22 @@
 import AdminDashboard from "./AdminDashboard";
 
 const AdminPage = async () => {
-  const res = await fetch(`${process.env.BACKEND_URL}/api/v1/users`, {
+  const userRes = await fetch(`${process.env.BACKEND_URL}/api/v1/users`, {
     next: {
       tags: ["users"],
     },
   });
-  const users = await res.json();
+  const property = await fetch(`${process.env.BACKEND_URL}/api/v1/property`, {
+    next: {
+      tags: ["property"],
+    },
+  });
+  const users = await userRes.json();
+  const properties = await property.json();
 
   return (
     <div>
-      <AdminDashboard users={users} />
+      <AdminDashboard users={users} properties={properties} />
     </div>
   );
 };
