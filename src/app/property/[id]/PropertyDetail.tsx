@@ -249,16 +249,16 @@ export default function PropertyDetail({
               <div className="space-y-3 text-sm text-gray-600 dark:text-gray-400">
                 <div className="flex items-center">
                   <i className="ri-user-line w-4 h-4 flex items-center justify-center mr-2"></i>
-                  <span>Owner: {property.ownerId.fullName}</span>
+                  <span>Owner: {property?.ownerId?.fullName}</span>
                 </div>
                 <div className="flex items-center">
                   <i className="ri-phone-line w-4 h-4 flex items-center justify-center mr-2"></i>
-                  <span>{property.ownerId.phoneNumber}</span>
+                  <span>{property?.ownerId?.phoneNumber}</span>
                 </div>
-                {property?.ownerId.email && (
+                {property?.ownerId?.email && (
                   <div className="flex items-center">
                     <i className="ri-mail-line w-4 h-4 flex items-center justify-center mr-2"></i>
-                    <span>{property.ownerId.email}</span>
+                    <span>{property?.ownerId?.email}</span>
                   </div>
                 )}
               </div>
@@ -297,15 +297,15 @@ export default function PropertyDetail({
               </div>
 
               <a
-                href={`tel:${property.ownerId.phoneNumber}`}
+                href={`tel:${property?.ownerId?.phoneNumber}`}
                 className="flex items-center justify-center w-full py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors cursor-pointer"
               >
                 <i className="ri-phone-line w-4 h-4 flex items-center justify-center mr-2"></i>
-                Call {property.ownerId.fullName} at{" "}
-                {property.ownerId.phoneNumber}
+                Call {property?.ownerId?.fullName} at{" "}
+                {property?.ownerId?.phoneNumber}
               </a>
 
-              {property.ownerId.email && (
+              {property?.ownerId?.email && (
                 <a
                   href={`mailto:${property.ownerId.email}`}
                   className="flex items-center justify-center w-full py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors cursor-pointer"
@@ -316,7 +316,7 @@ export default function PropertyDetail({
               )}
 
               <a
-                href={`sms:${property.ownerId.phoneNumber}?body=Hi, I'm interested in your property "${property.title}" in ${property.location}.`}
+                href={`sms:${property?.ownerId?.phoneNumber}?body=Hi, I'm interested in your property "${property.title}" in ${property.location}.`}
                 className="flex items-center justify-center w-full py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors cursor-pointer"
               >
                 <i className="ri-message-line w-4 h-4 flex items-center justify-center mr-2"></i>

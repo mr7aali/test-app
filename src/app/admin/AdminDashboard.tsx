@@ -1,8 +1,12 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Menu } from "lucide-react";
 import AdminSidebar from "@/components/adminPage/AdminSidebar";
 import { deleteUser, updateUser } from "./actions";
+import Loading from "../loading";
+import { getUserInfo } from "@/services/auth.service";
+import { useRouter } from "next/navigation";
+// import { useRouter } from "next/";
 
 interface IUser {
   _id: string;
@@ -14,7 +18,7 @@ interface IUser {
   updatedAt: string;
 }
 
-interface PropertyData {
+interface IProperty {
   _id: string;
   title: string;
   ownerId: {
@@ -36,35 +40,9 @@ interface PropertyData {
   createdAt: string;
   updatedAt: string;
   isApproved: boolean;
+  status: "approve" | "reject" | "pending";
 }
 
-const properties: PropertyData[] = [
-  {
-    _id: "68a224fd75df5ee4e198bc43",
-    title: "This",
-    ownerId: {
-      _id: "689ebf8e0b6295dc6d980457",
-      fullName: "Aali",
-      email: "talent@gmail.com",
-      role: "owner",
-      phoneNumber: "+8801967119057",
-    },
-    location: "Sonadanga",
-    type: "Bachelor",
-    rent: "34",
-    rooms: "3",
-    bathrooms: "3",
-    area: "12321",
-    description: "Thi si th eproperty",
-    features: ["Gym Access", "Semi-Furnished"],
-    images: [
-      "https://res.cloudinary.com/dzrlmvvzu/image/upload/v1755456380/t7yjhzzxfbzmskpaalsa.png",
-    ],
-    createdAt: "2025-08-17T18:52:45.562Z",
-    updatedAt: "2025-08-17T18:52:45.562Z",
-    isApproved: false,
-  },
-];
 export const buttonStyles = {
   primary:
     "px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg text-white font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 text-sm sm:text-base",
@@ -76,7 +54,15 @@ export const buttonStyles = {
   reject: "bg-red-600 hover:bg-red-800 focus:ring-red-500",
   cancel: "bg-gray-200 hover:bg-gray-300 focus:ring-gray-400",
 };
-const AdminDashboard = ({ users }: { users: IUser[] }) => {
+const AdminDashboard = ({
+  users,
+  properties,
+  needApproveProperties,
+}: {
+  users: IUser[];
+  properties: IProperty[];
+  needApproveProperties: IProperty[];
+}) => {
   const [activeTab, setActiveTab] = useState<
     "users" | "properties" | "approvals"
   >("users");
@@ -84,7 +70,7 @@ const AdminDashboard = ({ users }: { users: IUser[] }) => {
   const [showPropertyModal, setShowPropertyModal] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [selectedUser, setSelectedUser] = useState<IUser | null>(null);
-  const [selectedProperty, setSelectedProperty] = useState<PropertyData | null>(
+  const [selectedProperty, setSelectedProperty] = useState<IProperty | null>(
     null
   );
 
@@ -113,7 +99,29 @@ const AdminDashboard = ({ users }: { users: IUser[] }) => {
     area: "",
     description: "",
   });
-
+  const router = useRouter();
+  const [authChecked, setAuthChecked] = useState(false);
+  useEffect(() => {
+    setAuthChecked(false);
+    const user = getUserInfo() as {
+      email: string;
+      sub: string;
+      role: "owner" | "admin";
+      iat: number;
+      exp: number;
+    };
+    console.log(user);
+    if (!user) {
+      router.push("/login");
+    }
+    if (user?.role !== "admin") {
+      router.push("/");
+    }
+    setAuthChecked(true);
+  }, [router]);
+  if (!authChecked) {
+    return <Loading />;
+  }
   const handleEditUser = async (user: IUser) => {
     setSelectedUser(user);
     setUserForm({
@@ -128,7 +136,7 @@ const AdminDashboard = ({ users }: { users: IUser[] }) => {
     }
   };
 
-  const handleEditProperty = (property: PropertyData) => {
+  const handleEditProperty = (property: IProperty) => {
     setSelectedProperty(property);
     setPropertyForm({
       title: property.title,
@@ -142,7 +150,7 @@ const AdminDashboard = ({ users }: { users: IUser[] }) => {
     });
     setShowPropertyModal(true);
   };
-  console.log(selectedUser, "selected usr by ali");
+
   const handleUpdateUser = async () => {
     if (selectedUser?._id)
       await updateUser({ id: selectedUser._id, updatedData: userForm });
@@ -240,7 +248,7 @@ const AdminDashboard = ({ users }: { users: IUser[] }) => {
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
-                  {users.map((user) => (
+                  {users?.map((user) => (
                     <tr key={user._id}>
                       <td className="px-4 py-4 sm:px-6">
                         <div className="text-sm font-medium text-gray-900">
@@ -306,10 +314,10 @@ const AdminDashboard = ({ users }: { users: IUser[] }) => {
                       Location
                     </th>
                     <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider sm:px-6 hidden lg:table-cell">
-                      Rent
+                      Rent/m
                     </th>
                     <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider sm:px-6 hidden xl:table-cell">
-                      Owner
+                      Status
                     </th>
                     <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider sm:px-6">
                       Actions
@@ -317,7 +325,7 @@ const AdminDashboard = ({ users }: { users: IUser[] }) => {
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
-                  {properties.map((property) => (
+                  {properties?.map((property) => (
                     <tr key={property._id}>
                       <td className="px-4 py-4 sm:px-6">
                         <div className="text-sm font-medium text-gray-900">
@@ -353,9 +361,23 @@ const AdminDashboard = ({ users }: { users: IUser[] }) => {
                       <td className="px-4 py-4 sm:px-6 hidden lg:table-cell">
                         ${property.rent}
                       </td>
-                      <td className="px-4 py-4 sm:px-6 hidden xl:table-cell">
-                        {property.ownerId.fullName}
+                      <td>
+                        <span
+                          className={`px-2 py-1 rounded-full text-white text-sm font-medium ${
+                            property.status === "approve"
+                              ? "bg-green-600"
+                              : property.status === "reject"
+                              ? "bg-red-600"
+                              : "bg-yellow-600"
+                          }`}
+                        >
+                          {property.status.charAt(0).toUpperCase() +
+                            property.status.slice(1)}
+                        </span>
                       </td>
+                      {/* <td className="px-4 py-4 sm:px-6 hidden xl:table-cell">
+                        {property.ownerId.fullName}
+                      </td> */}
                       <td className="px-4 py-4 sm:px-6 whitespace-nowrap">
                         <button
                           onClick={() => handleEditProperty(property)}
@@ -397,7 +419,7 @@ const AdminDashboard = ({ users }: { users: IUser[] }) => {
                       Location
                     </th>
                     <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider sm:px-6 hidden lg:table-cell">
-                      Owner
+                      Rent
                     </th>
                     <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider sm:px-6 hidden xl:table-cell">
                       Status
@@ -408,19 +430,14 @@ const AdminDashboard = ({ users }: { users: IUser[] }) => {
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
-                  {properties.map((property) => (
+                  {needApproveProperties?.map((property) => (
                     <tr key={property._id}>
+                      {/* {{title}} */}
                       <td className="px-4 py-4 sm:px-6">
                         <div className="text-sm font-medium text-gray-900">
                           {property.title}
                         </div>
-                        <div className="text-sm text-gray-500 sm:hidden">
-                          <img
-                            src={property.images[0] || "/placeholder.jpg"}
-                            alt={property.title}
-                            className="w-16 h-16 object-cover rounded-lg mt-1"
-                          />
-                        </div>
+
                         <div className="text-sm text-gray-500 md:hidden">
                           {property.location}
                         </div>
@@ -435,6 +452,7 @@ const AdminDashboard = ({ users }: { users: IUser[] }) => {
                           )}
                         </div>
                       </td>
+                      {/* picture */}
                       <td className="px-4 py-4 sm:px-6 hidden sm:table-cell">
                         <img
                           src={property.images[0] || "/placeholder.jpg"}
@@ -442,19 +460,30 @@ const AdminDashboard = ({ users }: { users: IUser[] }) => {
                           className="w-16 h-16 object-cover rounded-lg"
                         />
                       </td>
+                      {/* location */}
                       <td className="px-4 py-4 sm:px-6 hidden md:table-cell">
                         {property.location}
                       </td>
-                      <td className="px-4 py-4 sm:px-6 hidden lg:table-cell">
-                        {property.ownerId.fullName}
+                      <td className="px-4 py-4 sm:px-6 hidden md:table-cell">
+                        {" "}
+                        {property.rent}
                       </td>
-                      <td className="px-4 py-4 sm:px-6 hidden xl:table-cell">
-                        {property.isApproved ? (
-                          <span className="text-green-600">Approved</span>
-                        ) : (
-                          <span className="text-yellow-600">Pending</span>
-                        )}
+                      {/* {{status}} */}
+                      <td className="px-4 py-4 sm:px-6 hidden md:table-cell">
+                        <span
+                          className={`px-2 py-1 rounded-full text-white text-sm font-medium ${
+                            property.status === "approve"
+                              ? "bg-green-600"
+                              : property.status === "reject"
+                              ? "bg-red-600"
+                              : "bg-yellow-600"
+                          }`}
+                        >
+                          {property.status.charAt(0).toUpperCase() +
+                            property.status.slice(1)}
+                        </span>
                       </td>
+                      {/* {{button}} */}
                       <td className="px-4 py-4 sm:px-6 whitespace-nowrap">
                         {!property.isApproved && (
                           <>
