@@ -118,7 +118,7 @@ const MobileMenuToggle = ({
   setMobileMenuOpen,
 }: {
   mobileMenuOpen: boolean;
-  setMobileMenuOpen: (open: boolean) => void;
+  setMobileMenuOpen: Dispatch<React.SetStateAction<boolean>>;
 }) => (
   <button
     onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -141,7 +141,7 @@ const MobileMenu = ({
   onLogout,
 }: {
   mobileMenuOpen: boolean;
-  setMobileMenuOpen: (open: boolean) => void;
+  setMobileMenuOpen: Dispatch<React.SetStateAction<boolean>>;
   authChecked: boolean;
   onLogout: () => void;
 }) =>
@@ -239,7 +239,11 @@ export default function Header() {
                 isDarkMode={isDarkMode}
                 toggleDarkMode={toggleDarkMode}
               />
-              <AuthButtons authChecked={authChecked} onLogout={handleLogout} />
+              <AuthButtons
+                authChecked={authChecked}
+                onLogout={handleLogout}
+                setMobileMenuOpen={setMobileMenuOpen}
+              />
             </div>
           </div>
         </div>
