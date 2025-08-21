@@ -228,6 +228,18 @@ export default function AddProperty() {
       setSubmitStatus(
         "Property listed successfully! It will be reviewed and published soon."
       );
+      setFormData({
+        title: "",
+        location: "",
+        type: "",
+        rent: "",
+        rooms: "",
+        bathrooms: "",
+        area: "",
+        description: "",
+        features: [],
+        images: [],
+      });
     } catch (error) {
       console.error("Please try again : ", error);
       setSubmitStatus(`Please try again `);
