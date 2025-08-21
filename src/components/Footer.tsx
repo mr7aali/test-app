@@ -1,6 +1,14 @@
 "use client";
 
 import Link from "next/link";
+import {
+  MapPin,
+  Phone,
+  Mail,
+  Facebook,
+  Twitter,
+  Instagram,
+} from "lucide-react";
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
@@ -12,8 +20,16 @@ export default function Footer() {
           {/* Brand Section */}
           <div className="col-span-1 md:col-span-1">
             <Link href="/" className="flex items-center space-x-2 mb-4">
-              <div className="w-10 h-10 bg-gradient-to-r from-purple-600 to-blue-600 rounded-xl flex items-center justify-center">
-                <i className="ri-building-line text-white text-xl"></i>
+              <div
+                style={{
+                  backgroundImage: "url('/icon.jpeg')",
+                  backgroundSize: "cover",
+                  backgroundPosition: "center",
+                  backgroundBlendMode: "overlay",
+                }}
+                className="w-10 h-10 bg-gradient-to-r from-purple-600 to-blue-600 rounded-xl flex items-center justify-center"
+              >
+                {/* <Home className="text-white h-5 w-5" /> */}
               </div>
               <span className="font-['Pacifico'] text-2xl bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
                 Place Arena
@@ -69,7 +85,7 @@ export default function Footer() {
             <h3 className="text-lg font-semibold mb-4">Contact Info</h3>
             <ul className="space-y-3">
               <li className="flex items-start">
-                <i className="ri-map-pin-line w-4 h-4 flex items-center justify-center mr-3 mt-0.5 text-purple-400"></i>
+                <MapPin className="w-4 h-4 flex items-center justify-center mr-3 mt-0.5 text-purple-400" />
                 <span className="text-gray-400 text-sm">
                   123 Khan Jahan Ali Road
                   <br />
@@ -77,16 +93,16 @@ export default function Footer() {
                 </span>
               </li>
               <li className="flex items-center">
-                <i className="ri-phone-line w-4 h-4 flex items-center justify-center mr-3 text-purple-400"></i>
+                <Phone className="w-4 h-4 flex items-center justify-center mr-3 text-purple-400" />
                 <a
                   href="tel:+8801712345678"
                   className="text-gray-400 hover:text-white transition-colors text-sm"
                 >
-                  +880 1712-345678
+                  +880 1910683176
                 </a>
               </li>
               <li className="flex items-center">
-                <i className="ri-mail-line w-4 h-4 flex items-center justify-center mr-3 text-purple-400"></i>
+                <Mail className="w-4 h-4 flex items-center justify-center mr-3 text-purple-400" />
                 <a
                   href="mailto:info@placearena.com"
                   className="text-gray-400 hover:text-white transition-colors text-sm"
@@ -109,25 +125,25 @@ export default function Footer() {
                 href="https://facebook.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-8 h-8 bg-gray-800 rounded-lg flex items-center justify-center hover:bg-purple-600 transition-colors cursor-pointer"
+                className="w-8 h-8 bg-gray-800 rounded-lg flex items-center justify-center transition-all duration-200 hover:bg-blue-500 hover:scale-105"
               >
-                <i className="ri-facebook-fill text-sm"></i>
+                <Facebook className="h-4 w-4" />
               </a>
               <a
                 href="https://twitter.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-8 h-8 bg-gray-800 rounded-lg flex items-center justify-center hover:bg-purple-600 transition-colors cursor-pointer"
+                className="w-8 h-8 bg-gray-800 rounded-lg flex items-center justify-center transition-all duration-200 hover:bg-blue-500 hover:scale-105"
               >
-                <i className="ri-twitter-fill text-sm"></i>
+                <Twitter className="h-4 w-4" />
               </a>
               <a
                 href="https://instagram.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-8 h-8 bg-gray-800 rounded-lg flex items-center justify-center hover:bg-purple-600 transition-colors cursor-pointer"
+                className="w-8 h-8 bg-gray-800 rounded-lg flex items-center justify-center transition-all duration-200 hover:bg-blue-500 hover:scale-105"
               >
-                <i className="ri-instagram-fill text-sm"></i>
+                <Instagram className="h-4 w-4" />
               </a>
             </div>
           </div>
