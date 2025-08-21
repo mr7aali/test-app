@@ -10,6 +10,7 @@ import Loading from "../loading";
 import { useAuthGuard } from "@/utils/useAuthGuard";
 import { getToken, getUserInfo } from "@/services/auth.service";
 import { getUserProfile } from "../actions";
+import { updateProfile } from "./actions";
 
 function ProfileSkeleton() {
   return (
@@ -120,12 +121,14 @@ export default function Profile() {
     phoneNumber: "",
     email: "",
   });
+
   const pathname = usePathname();
   const authChecked = useAuthGuard();
   const router = useRouter();
   const user = getUserInfo() as {
     email: string;
     sub: string;
+    role: "admin" | "owner";
   };
 
   useEffect(() => {
@@ -136,6 +139,7 @@ export default function Profile() {
         {
           method: "GET",
           credentials: "include",
+          next: { tags: ["profile"] },
         }
       );
       const data = await res.json();
@@ -197,25 +201,14 @@ export default function Profile() {
     if (!Token) return;
 
     try {
-      const res = await fetch(
-        `https://place-arena-backend.vercel.app/api/v1/user/${user.sub}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${Token.accessToken}`,
-          },
-          body: JSON.stringify(formData),
-          credentials: "include",
-        }
-      );
+      const result = await updateProfile({
+        id: user.sub,
+        updatedData: formData,
+      });
 
-      if (res.ok) {
-        const updatedProfile = await res.json();
-        setUserProfile(updatedProfile);
+      if (!!result) {
+        setUserProfile(result);
         setIsModalOpen(false);
-      } else {
-        console.error("Failed to update profile");
       }
     } catch (error) {
       console.error("Error updating profile:", error);
@@ -290,12 +283,22 @@ export default function Profile() {
                 </div>
               </div>
 
-              <button
-                onClick={handleEditProfile}
-                className="px-6 py-2 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-lg hover:from-purple-700 hover:to-blue-700 transition-all duration-300 cursor-pointer whitespace-nowrap"
-              >
-                Edit Profile
-              </button>
+              <div className="grid-cols-1 grid gap-2">
+                <button
+                  onClick={handleEditProfile}
+                  className="px-6 py-2 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-lg hover:from-purple-700 hover:to-blue-700 transition-all duration-300 cursor-pointer whitespace-nowrap"
+                >
+                  Edit Profile
+                </button>
+                {user.role === "admin" && (
+                  <Link
+                    href={"/admin"}
+                    className="px-6 py-2 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-lg hover:from-purple-700 hover:to-blue-700 transition-all duration-300 cursor-pointer whitespace-nowrap"
+                  >
+                    Dashboard
+                  </Link>
+                )}
+              </div>
             </div>
           </div>
 
@@ -455,9 +458,9 @@ export default function Profile() {
                   </div>
 
                   <div className="flex md:flex-col gap-2">
-                    <button className="px-3 py-1 text-sm bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors cursor-pointer whitespace-nowrap">
+                    {/* <button className="px-3 py-1 text-sm bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors cursor-pointer whitespace-nowrap">
                       Edit
-                    </button>
+                    </button> */}
                     <Link
                       href={`/property/${property._id}`}
                       className="px-3 py-1 text-sm bg-blue-100 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400 rounded-lg hover:bg-blue-200 dark:hover:bg-blue-900/40 transition-colors cursor-pointer whitespace-nowrap"
