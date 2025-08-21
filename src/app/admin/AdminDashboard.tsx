@@ -163,7 +163,12 @@ const AdminDashboard = ({
     setShowUserModal(false);
   };
 
-  const handleUpdateProperty = () => {
+  const handleUpdateProperty = async () => {
+    if (selectedProperty?._id)
+      await updateProperty({
+        id: selectedProperty._id,
+        updatedData: propertyForm,
+      });
     console.log("Updating property:", propertyForm);
     setShowPropertyModal(false);
   };
@@ -377,7 +382,7 @@ const AdminDashboard = ({
                         {property.location}
                       </td>
                       <td className="px-4 py-4 sm:px-6 hidden lg:table-cell">
-                        ${property.rent}
+                        {property.rent} <span className="text-[20px]"> ৳ </span>
                       </td>
                       <td>
                         <span
@@ -484,7 +489,7 @@ const AdminDashboard = ({
                       </td>
                       <td className="px-4 py-4 sm:px-6 hidden md:table-cell">
                         {" "}
-                        {property.rent}
+                        {property.rent} <span className="text-[20px]"> ৳ </span>
                       </td>
                       {/* {{status}} */}
                       <td className="px-4 py-4 sm:px-6 hidden md:table-cell">

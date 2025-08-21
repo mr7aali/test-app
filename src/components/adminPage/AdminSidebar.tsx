@@ -56,7 +56,7 @@ const AdminSidebar = ({
           } transition-colors duration-200 text-sm sm:text-base`}
         >
           <Home className="w-5 h-5 mr-2" />
-          Properties
+          All Properties
         </button>
         <button
           onClick={() => {
@@ -70,7 +70,7 @@ const AdminSidebar = ({
           } transition-colors duration-200 text-sm sm:text-base`}
         >
           <CheckCircle className="w-5 h-5 mr-2" />
-          Approvals
+          Need Approvals
         </button>
       </nav>
     </aside>
