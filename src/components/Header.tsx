@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, Dispatch } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
@@ -76,16 +76,24 @@ const NavItem = ({
 const AuthButtons = ({
   authChecked,
   onLogout,
+  setMobileMenuOpen,
 }: {
   authChecked: boolean;
   onLogout: () => void;
+  setMobileMenuOpen: Dispatch<React.SetStateAction<boolean>>;
 }) => (
   <div className="flex items-center space-x-4">
     {!authChecked ? (
       <>
-        <NavItem href="/login" icon={LogIn} label="Login" />
+        <NavItem
+          href="/login"
+          icon={LogIn}
+          label="Login"
+          onClick={() => setMobileMenuOpen((pre) => !pre)}
+        />
         <Link
           href="/signup"
+          onClick={() => setMobileMenuOpen((pre) => !pre)}
           className="px-6 py-2 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-lg hover:from-purple-700 hover:to-blue-700 transition-all duration-300 font-medium"
         >
           Sign Up
@@ -165,7 +173,11 @@ const MobileMenu = ({
           onClick={() => setMobileMenuOpen(false)}
         />
         <div className="border-t border-gray-200/50 dark:border-gray-800/50 my-3"></div>
-        <AuthButtons authChecked={authChecked} onLogout={onLogout} />
+        <AuthButtons
+          setMobileMenuOpen={setMobileMenuOpen}
+          authChecked={authChecked}
+          onLogout={onLogout}
+        />
       </div>
     </div>
   );
