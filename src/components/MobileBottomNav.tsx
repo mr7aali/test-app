@@ -2,7 +2,17 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-// import Link from 'next/link';
+import {
+  Home,
+  HomeIcon,
+  Building,
+  Building2,
+  Heart,
+  HeartHandshake,
+  PlusCircle,
+  User,
+  User2,
+} from "lucide-react";
 
 export default function MobileBottomNav() {
   const pathname = usePathname();
@@ -10,32 +20,32 @@ export default function MobileBottomNav() {
   const navItems = [
     {
       href: "/",
-      icon: "ri-home-line",
-      activeIcon: "ri-home-fill",
+      icon: Home,
+      activeIcon: HomeIcon, // slightly bolder look
       label: "Home",
     },
     {
       href: "/properties",
-      icon: "ri-building-line",
-      activeIcon: "ri-building-fill",
+      icon: Building,
+      activeIcon: Building2,
       label: "Properties",
     },
     {
       href: "/saved",
-      icon: "ri-heart-line",
-      activeIcon: "ri-heart-fill",
+      icon: Heart,
+      activeIcon: HeartHandshake,
       label: "Saved",
     },
     {
       href: "/add-property",
-      icon: "ri-add-circle-line",
-      activeIcon: "ri-add-circle-fill",
+      icon: PlusCircle,
+      activeIcon: PlusCircle, // same icon, just color change
       label: "Add Property",
     },
     {
       href: "/profile",
-      icon: "ri-user-line",
-      activeIcon: "ri-user-fill",
+      icon: User,
+      activeIcon: User2,
       label: "Profile",
     },
   ];
@@ -45,6 +55,7 @@ export default function MobileBottomNav() {
       <div className="grid grid-cols-5">
         {navItems.map((item) => {
           const isActive = pathname === item.href;
+          const Icon = isActive ? item.activeIcon : item.icon;
 
           return (
             <Link
@@ -57,11 +68,7 @@ export default function MobileBottomNav() {
               }`}
             >
               <div className="w-5 h-5 flex items-center justify-center mb-1">
-                <i
-                  className={`${
-                    isActive ? item.activeIcon : item.icon
-                  } text-lg`}
-                ></i>
+                <Icon className="w-5 h-5" />
               </div>
               <span className="text-xs font-medium leading-tight text-center">
                 {item.label}
