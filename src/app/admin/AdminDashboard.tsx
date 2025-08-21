@@ -2,7 +2,12 @@
 import React, { useEffect, useState } from "react";
 import { Menu } from "lucide-react";
 import AdminSidebar from "@/components/adminPage/AdminSidebar";
-import { deleteUser, updateUser } from "./actions";
+import {
+  deleteProperties,
+  deleteUser,
+  updateProperty,
+  updateUser,
+} from "./actions";
 import Loading from "../loading";
 import { getUserInfo } from "@/services/auth.service";
 import { useRouter } from "next/navigation";
@@ -167,11 +172,24 @@ const AdminDashboard = ({
     if (confirmAction === "deleteUser" && !!confirmId) {
       await deleteUser(confirmId);
       console.log(`Deleting user ${confirmId}`);
-    } else if (confirmAction === "deleteProperty") {
+    } else if (confirmAction === "deleteProperty" && !!confirmId) {
+      await deleteProperties(confirmId);
       console.log(`Deleting property ${confirmId}`);
-    } else if (confirmAction === "approveProperty") {
+    } else if (confirmAction === "approveProperty" && !!confirmId) {
+      await updateProperty({
+        id: confirmId,
+        updatedData: {
+          status: "approve",
+        },
+      });
       console.log(`Approving property ${confirmId}`);
-    } else if (confirmAction === "rejectProperty") {
+    } else if (confirmAction === "rejectProperty" && !!confirmId) {
+      await updateProperty({
+        id: confirmId,
+        updatedData: {
+          status: "reject",
+        },
+      });
       console.log(`Rejecting property ${confirmId}`);
     }
     setShowConfirmModal(false);
