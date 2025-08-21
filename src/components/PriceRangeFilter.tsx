@@ -1,6 +1,6 @@
 "use client";
 
-import { DollarSign } from "lucide-react";
+import Link from "next/link";
 import { useState } from "react";
 
 interface PriceRangeFilterProps {
@@ -37,7 +37,6 @@ PriceRangeFilterProps) {
           <div className="grid grid-cols-2 gap-3">
             <div>
               <label className="flex gap-1 text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                <DollarSign className="w-4 h-4 text-gray-500" />
                 Min Price
               </label>
               <input
@@ -50,7 +49,6 @@ PriceRangeFilterProps) {
             </div>
             <div>
               <label className="flex items-center gap-1 text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                <DollarSign className="w-4 h-4 text-gray-500" />
                 Max Price
               </label>
               <input
@@ -70,12 +68,13 @@ PriceRangeFilterProps) {
             >
               Reset
             </button>
-            <button
+            <Link
+              href={"#propertiesSection"}
               onClick={handleApply}
               className="px-4 py-2 text-sm bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors cursor-pointer whitespace-nowrap"
             >
               Apply
-            </button>
+            </Link>
           </div>
         </div>
       </div>

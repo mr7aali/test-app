@@ -115,7 +115,7 @@ const AdminDashboard = ({
       iat: number;
       exp: number;
     };
-    console.log(user);
+
     if (!user) {
       router.push("/login");
     }
@@ -169,17 +169,15 @@ const AdminDashboard = ({
         id: selectedProperty._id,
         updatedData: propertyForm,
       });
-    console.log("Updating property:", propertyForm);
+
     setShowPropertyModal(false);
   };
 
   const handleConfirm = async () => {
     if (confirmAction === "deleteUser" && !!confirmId) {
       await deleteUser(confirmId);
-      console.log(`Deleting user ${confirmId}`);
     } else if (confirmAction === "deleteProperty" && !!confirmId) {
       await deleteProperties(confirmId);
-      console.log(`Deleting property ${confirmId}`);
     } else if (confirmAction === "approveProperty" && !!confirmId) {
       await updateProperty({
         id: confirmId,
@@ -187,7 +185,6 @@ const AdminDashboard = ({
           status: "approve",
         },
       });
-      console.log(`Approving property ${confirmId}`);
     } else if (confirmAction === "rejectProperty" && !!confirmId) {
       await updateProperty({
         id: confirmId,
@@ -195,7 +192,6 @@ const AdminDashboard = ({
           status: "reject",
         },
       });
-      console.log(`Rejecting property ${confirmId}`);
     }
     setShowConfirmModal(false);
     setConfirmAction(null);

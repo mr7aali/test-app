@@ -13,7 +13,7 @@ interface Property {
   bathrooms: number;
   area: string;
   image: string;
-  images: string[]; // Optional array of images
+  images: string[];
   features: string[];
 }
 
@@ -60,11 +60,10 @@ export default function PropertyCard({
     });
   };
 
-  // Determine image source with fallback
   const imageSrc =
     Array.isArray(property.images) && property.images.length > 0
       ? property.images[0]
-      : property.images[0] || "/fallback-image.jpg"; // Replace with your fallback image path
+      : property.images[0] || "/fallback-image.jpg";
 
   if (isMobile) {
     return (
@@ -86,20 +85,20 @@ export default function PropertyCard({
           <div className="absolute top-2 right-2 flex gap-1">
             <button
               onClick={toggleSave}
-              className={`w-6 h-6 rounded-full flex items-center justify-center transition-colors cursor-pointer ${
+              className={`w-6 h-6 rounded-full flex items-center justify-center transition-all duration-200 cursor-pointer ${
                 isSaved
-                  ? "bg-red-600 text-white"
-                  : "bg-white/80 text-gray-600 hover:bg-red-600 hover:text-white"
+                  ? "bg-blue-600 text-white"
+                  : "bg-white/80 text-gray-600 hover:bg-blue-100 hover:text-blue-600"
               }`}
             >
               <i
                 className={`${
-                  isSaved ? "ri-heart-fill" : "ri-heart-line"
+                  isSaved ? "ri-bookmark-fill" : "ri-bookmark-line"
                 } text-xs`}
               ></i>
             </button>
-            <div className="w-6 h-6 bg-yellow-500 rounded-full flex items-center justify-center">
-              <i className="ri-flashlight-fill text-white text-xs"></i>
+            <div className="w-6 h-6 bg-amber-500 rounded-full flex items-center justify-center transition-all duration-200 hover:bg-amber-400">
+              <i className="ri-star-fill text-white text-xs"></i>
             </div>
           </div>
         </div>
@@ -150,20 +149,20 @@ export default function PropertyCard({
         <div className="absolute top-4 right-4 flex gap-2">
           <button
             onClick={toggleSave}
-            className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors cursor-pointer ${
+            className={`w-8 h-8 rounded-full flex items-center justify-center transition-all duration-200 cursor-pointer ${
               isSaved
-                ? "bg-red-600 text-white"
-                : "bg-white/80 text-gray-600 hover:bg-red-600 hover:text-white"
+                ? "bg-blue-600 text-white"
+                : "bg-white/80 text-gray-600 hover:bg-blue-100 hover:text-blue-600"
             }`}
           >
             <i
               className={`${
-                isSaved ? "ri-heart-fill" : "ri-heart-line"
+                isSaved ? "ri-bookmark-fill" : "ri-bookmark-line"
               } text-sm`}
             ></i>
           </button>
-          <div className="w-8 h-8 bg-yellow-500 rounded-full flex items-center justify-center">
-            <i className="ri-flashlight-fill text-white text-sm"></i>
+          <div className="w-8 h-8 bg-amber-500 rounded-full flex items-center justify-center transition-all duration-200 hover:bg-amber-400">
+            <i className="ri-star-fill text-white text-sm"></i>
           </div>
         </div>
       </div>

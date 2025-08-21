@@ -3,7 +3,6 @@ import { useState, useEffect, Dispatch } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
-  Home,
   Search,
   PlusCircle,
   Heart,
@@ -20,9 +19,15 @@ import { isLoggedIn, logOutUser } from "@/services/auth.service";
 // Logo Component
 const Logo = () => (
   <Link href="/" className="flex items-center space-x-3 group">
-    <div className="w-12 h-12 md:w-12 md:h-12 bg-gradient-to-r from-purple-600 to-blue-600 rounded-2xl flex items-center justify-center transform group-hover:scale-105 transition-transform">
-      <Home className="w-5 h-5 md:w-6 md:h-6 text-white" />
-    </div>
+    <div
+      style={{
+        backgroundImage: "url('/icon.jpeg')",
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundBlendMode: "overlay",
+      }}
+      className="w-12 h-12 md:w-12 md:h-12 bg-gradient-to-r from-purple-600 to-blue-600 rounded-2xl flex items-center justify-center transform group-hover:scale-105 transition-transform"
+    ></div>
     <span className="font-['Pacifico'] text-xl md:text-2xl bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent group-hover:from-purple-500 group-hover:to-blue-500 transition-all">
       Place Arena
     </span>

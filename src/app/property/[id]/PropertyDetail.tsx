@@ -4,6 +4,7 @@ import { useState } from "react";
 
 import MobileBottomNav from "../../../components/MobileBottomNav";
 import Image from "next/image";
+import { ArrowLeft, ArrowRight } from "lucide-react";
 
 export default function PropertyDetail({
   property,
@@ -94,13 +95,14 @@ export default function PropertyDetail({
                   onClick={prevImage}
                   className="absolute left-4 top-1/2 transform -translate-y-1/2 w-10 h-10 bg-black/50 text-white rounded-full flex items-center justify-center hover:bg-black/70 transition-colors cursor-pointer"
                 >
-                  <i className="ri-arrow-left-line"></i>
+                  <ArrowLeft />
                 </button>
                 <button
                   onClick={nextImage}
                   className="absolute right-4 top-1/2 transform -translate-y-1/2 w-10 h-10 bg-black/50 text-white rounded-full flex items-center justify-center hover:bg-black/70 transition-colors cursor-pointer"
                 >
-                  <i className="ri-arrow-right-line"></i>
+                  {/* <i className="ri-arrow-right-line"></i> */}
+                  <ArrowRight />
                 </button>
               </>
             )}

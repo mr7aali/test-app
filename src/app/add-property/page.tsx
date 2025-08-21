@@ -3,18 +3,16 @@
 "use client";
 
 import type React from "react";
-
 import { useState } from "react";
-
 import MobileBottomNav from "../../components/MobileBottomNav";
 import { availableFeatures, khulnaAreas, propertyTypes } from "@/data";
 import { uploadImageToCloudinary } from "../lib/cloudinary";
-
 import { getUserProfile } from "../actions";
 import { useRouter } from "next/navigation";
 import { getToken } from "@/services/auth.service";
 import { useAuthGuard } from "@/utils/useAuthGuard";
 import Loading from "../loading";
+import { ImagePlus, ChevronDown, Loader2, X, Upload } from "lucide-react";
 
 interface FormData {
   title: string;
@@ -93,34 +91,26 @@ export default function AddProperty() {
       return;
     }
 
-    // Initialize uploading states
     const newUploadingStates = new Array(files.length).fill(true);
     setUploadingImages((prev) => [...prev, ...newUploadingStates]);
 
     try {
-      // Upload each file to Cloudinary
       const uploadPromises = files.map(async (file, index) => {
         try {
           const imageUrl = await uploadImageToCloudinary(file);
-
-          // Update uploading state for this specific image
           setUploadingImages((prev) => {
             const newStates = [...prev];
             newStates[formData.images.length + index] = false;
             return newStates;
           });
-
           return imageUrl;
         } catch (error) {
           console.error(`Failed to upload image ${index + 1}:`, error);
-
-          // Update uploading state for failed upload
           setUploadingImages((prev) => {
             const newStates = [...prev];
             newStates[formData.images.length + index] = false;
             return newStates;
           });
-
           return null;
         }
       });
@@ -149,7 +139,6 @@ export default function AddProperty() {
       alert("Failed to upload images. Please try again.");
     }
 
-    // Clear the input
     e.target.value = "";
   };
 
@@ -183,9 +172,7 @@ export default function AddProperty() {
     setSubmitStatus("");
 
     try {
-      // Prepare data in the format expected by backend
       const Token = getToken();
-
       if (Token === null) {
         router.push("/login");
         return;
@@ -286,7 +273,7 @@ export default function AddProperty() {
                   className="cursor-pointer flex flex-col items-center"
                 >
                   <div className="w-12 h-12 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center mb-3">
-                    <i className="ri-image-add-line text-2xl text-gray-400"></i>
+                    <ImagePlus className="h-6 w-6 text-gray-400" />
                   </div>
                   <p className="text-gray-600 dark:text-gray-400 mb-2">
                     Click to upload property photos
@@ -298,32 +285,40 @@ export default function AddProperty() {
               </div>
 
               {/* Image Preview Grid */}
-              {formData.images.length > 0 && (
+              {(formData.images.length > 0 || uploadingImages.length > 0) && (
                 <div className="mt-4">
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    {formData.images.map((imageUrl, index) => (
-                      <div key={index} className="relative group">
-                        <div className="w-full h-24 bg-gray-100 dark:bg-gray-800 rounded-lg overflow-hidden">
-                          <img
-                            src={imageUrl || "/placeholder.svg"}
-                            alt={`Property ${index + 1}`}
-                            className="w-full h-full object-cover"
-                          />
-                          {uploadingImages[index] && (
-                            <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-                              <i className="ri-loader-line animate-spin text-white text-xl"></i>
-                            </div>
-                          )}
-                        </div>
-                        <button
-                          type="button"
-                          onClick={() => removeImage(index)}
-                          className="absolute -top-2 -right-2 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
+                    {uploadingImages.map((isUploading, index) =>
+                      isUploading ? (
+                        <div
+                          key={`uploading-${index}`}
+                          className="relative w-full h-24 bg-gray-100 dark:bg-gray-800 rounded-lg overflow-hidden flex items-center justify-center"
                         >
-                          <i className="ri-close-line text-sm"></i>
-                        </button>
-                      </div>
-                    ))}
+                          <Loader2 className="h-5 w-5 text-white animate-spin" />
+                        </div>
+                      ) : (
+                        formData.images[index] && (
+                          <div key={index} className="relative group">
+                            <div className="w-full h-24 bg-gray-100 dark:bg-gray-800 rounded-lg overflow-hidden">
+                              <img
+                                src={
+                                  formData.images[index] || "/placeholder.svg"
+                                }
+                                alt={`Property ${index + 1}`}
+                                className="w-full h-full object-cover"
+                              />
+                            </div>
+                            <button
+                              type="button"
+                              onClick={() => removeImage(index)}
+                              className="absolute -top-2 -right-2 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
+                            >
+                              <X className="h-4 w-4" />
+                            </button>
+                          </div>
+                        )
+                      )
+                    )}
                   </div>
                   <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">
                     {formData.images.length}/15 photos uploaded
@@ -361,11 +356,11 @@ export default function AddProperty() {
                   <span className="text-gray-900 dark:text-white">
                     {formData.location || "Select Location"}
                   </span>
-                  <i
-                    className={`ri-arrow-down-s-line absolute right-3 top-1/2 transform -translate-y-1/2 transition-transform ${
+                  <ChevronDown
+                    className={`absolute right-3 top-1/2 transform -translate-y-1/2 transition-transform h-5 w-5 ${
                       locationDropdownOpen ? "rotate-180" : ""
                     }`}
-                  ></i>
+                  />
                 </button>
 
                 {locationDropdownOpen && (
@@ -399,11 +394,11 @@ export default function AddProperty() {
                   <span className="text-gray-900 dark:text-white">
                     {formData.type || "Select Type"}
                   </span>
-                  <i
-                    className={`ri-arrow-down-s-line absolute right-3 top-1/2 transform -translate-y-1/2 transition-transform ${
+                  <ChevronDown
+                    className={`absolute right-3 top-1/2 transform -translate-y-1/2 transition-transform h-5 w-5 ${
                       typeDropdownOpen ? "rotate-180" : ""
                     }`}
-                  ></i>
+                  />
                 </button>
 
                 {typeDropdownOpen && (
@@ -528,62 +523,6 @@ export default function AddProperty() {
               </div>
             </div>
 
-            {/* Owner Contact Information */}
-            {/* <div
-              style={{ border: "1px solid red" }}
-              className="border-t border-gray-200 dark:border-gray-700 pt-6"
-            >
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-                Contact Information
-              </h3>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    Owner Name *
-                  </label>
-                  <input
-                    type="text"
-                    name="ownerName"
-                    value={formData.ownerName}
-                    onChange={handleInputChange}
-                    placeholder="Your full name"
-                    className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
-                    required
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    Phone Number *
-                  </label>
-                  <input
-                    type="tel"
-                    name="ownerPhone"
-                    value={formData.ownerPhone}
-                    onChange={handleInputChange}
-                    placeholder="+880 1XXX-XXXXXX"
-                    className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
-                    required
-                  />
-                </div>
-              </div>
-
-              <div className="mt-4">
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  Email Address (Optional)
-                </label>
-                <input
-                  type="email"
-                  name="ownerEmail"
-                  value={formData.ownerEmail}
-                  onChange={handleInputChange}
-                  placeholder="your.email@example.com"
-                  className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
-                />
-              </div>
-            </div> */}
-
             {/* Status Message */}
             {submitStatus && (
               <div
@@ -612,12 +551,12 @@ export default function AddProperty() {
               >
                 {isSubmitting ? (
                   <div className="flex items-center justify-center">
-                    <i className="ri-loader-line animate-spin mr-2"></i>
+                    <Loader2 className="h-5 w-5 animate-spin mr-2" />
                     Submitting Property...
                   </div>
                 ) : uploadingImages.some((uploading) => uploading) ? (
                   <div className="flex items-center justify-center">
-                    <i className="ri-upload-line animate-pulse mr-2"></i>
+                    <Upload className="h-5 w-5 animate-pulse mr-2" />
                     Uploading Images...
                   </div>
                 ) : (

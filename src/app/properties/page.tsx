@@ -46,7 +46,7 @@ export default function PropertiesPage() {
         />
       </div>
 
-      <section className="py-8 md:py-16 flex-1">
+      <section className="py-8 md:py-16 flex-1" id="propertiesSection">
         <div className="max-w-7xl mx-auto px-3 md:px-6">
           <PropertyGrid
             properties={properties}
@@ -57,7 +57,6 @@ export default function PropertiesPage() {
         </div>
       </section>
 
-      <Footer />
       <MobileBottomNav />
     </div>
   );
