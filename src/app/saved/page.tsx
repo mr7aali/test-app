@@ -32,7 +32,7 @@ export default function SavedProperties() {
     const saved = localStorage.getItem("savedProperties");
     if (saved) {
       const savedIds = JSON.parse(saved);
-      console.log(savedIds);
+
       setSavedProperties(savedIds);
     }
   }, []);
@@ -53,7 +53,7 @@ export default function SavedProperties() {
 
     fetchProperties();
   }, [savedProperties]);
-  console.log(savedPropertiesData);
+
   const removeSavedProperty = (propertyId: string) => {
     const updatedSaved = savedProperties.filter((id) => id !== propertyId);
     setSavedProperties(updatedSaved);

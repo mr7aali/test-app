@@ -8,6 +8,6 @@ export const getSavePageProperties = async ({ ids }: { ids: string[] }) => {
     body: JSON.stringify({ ids: ids }),
   });
   const data = await res.json();
-  console.log(data);
+
   return data;
 };
