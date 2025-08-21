@@ -5,13 +5,12 @@
 import { useEffect, useState } from "react";
 import MobileBottomNav from "../../components/MobileBottomNav";
 import { usePathname, useRouter } from "next/navigation";
-// import { getUserProfile } from "../actions";
 import Link from "next/link";
 import Loading from "../loading";
 import { useAuthGuard } from "@/utils/useAuthGuard";
 import { getToken, getUserInfo } from "@/services/auth.service";
 import { getUserProfile } from "../actions";
-// import { useRouter } from "next/n";
+import { updateProfile } from "./actions";
 
 function ProfileSkeleton() {
   return (
@@ -114,15 +113,22 @@ export default function Profile() {
     status: string;
   }[];
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
-
   const [myProperties, setMyProperties] = useState<IProperty>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [formData, setFormData] = useState({
+    fullName: "",
+    phoneNumber: "",
+    email: "",
+  });
+
   const pathname = usePathname();
   const authChecked = useAuthGuard();
   const router = useRouter();
   const user = getUserInfo() as {
     email: string;
     sub: string;
+    role: "admin" | "owner";
   };
 
   useEffect(() => {
@@ -133,6 +139,7 @@ export default function Profile() {
         {
           method: "GET",
           credentials: "include",
+          next: { tags: ["profile"] },
         }
       );
       const data = await res.json();
@@ -159,6 +166,11 @@ export default function Profile() {
         setUserProfile(null);
       } else {
         setUserProfile(userData);
+        setFormData({
+          fullName: userData.fullName || "",
+          phoneNumber: userData.phoneNumber || "",
+          email: userData.email || "",
+        });
       }
       setIsLoading(false);
     };
@@ -169,9 +181,44 @@ export default function Profile() {
       fetchUserProfile();
     }
   }, [pathname, router]);
+
+  const handleEditProfile = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const Token = getToken();
+    if (!Token) return;
+
+    try {
+      const result = await updateProfile({
+        id: user.sub,
+        updatedData: formData,
+      });
+
+      if (!!result) {
+        setUserProfile(result);
+        setIsModalOpen(false);
+      }
+    } catch (error) {
+      console.error("Error updating profile:", error);
+    }
+  };
+
   if (!authChecked) {
     return <Loading />;
   }
+
   const avgRent =
     myProperties.length > 0
       ? Math.round(
@@ -236,11 +283,91 @@ export default function Profile() {
                 </div>
               </div>
 
-              <button className="px-6 py-2 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-lg hover:from-purple-700 hover:to-blue-700 transition-all duration-300 cursor-pointer whitespace-nowrap">
-                Edit Profile
-              </button>
+              <div className="grid-cols-1 grid gap-2">
+                <button
+                  onClick={handleEditProfile}
+                  className="px-6 py-2 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-lg hover:from-purple-700 hover:to-blue-700 transition-all duration-300 cursor-pointer whitespace-nowrap"
+                >
+                  Edit Profile
+                </button>
+                {user.role === "admin" && (
+                  <Link
+                    href={"/admin"}
+                    className="px-6 py-2 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-lg hover:from-purple-700 hover:to-blue-700 transition-all duration-300 cursor-pointer whitespace-nowrap"
+                  >
+                    Dashboard
+                  </Link>
+                )}
+              </div>
             </div>
           </div>
+
+          {/* Edit Profile Modal */}
+          {isModalOpen && (
+            <div className="fixed inset-0 backdrop-blur-md flex items-center justify-center z-50">
+              <div className="bg-white dark:bg-gray-900 rounded-lg p-6 w-full max-w-md">
+                <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
+                  Edit Profile
+                </h2>
+                <form onSubmit={handleSubmit} className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                      Full Name
+                    </label>
+                    <input
+                      type="text"
+                      name="fullName"
+                      value={formData.fullName}
+                      onChange={handleInputChange}
+                      className="mt-1 block py-2 px-3 w-full rounded-md border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 shadow-sm focus:border-purple-500 focus:ring-purple-500 sm:text-sm"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                      Email
+                    </label>
+                    <input
+                      type="email"
+                      name="email"
+                      value={formData.email}
+                      onChange={handleInputChange}
+                      className="mt-1 block py-2 px-3 w-full rounded-md border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 shadow-sm focus:border-purple-500 focus:ring-purple-500 sm:text-sm"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                      Phone Number
+                    </label>
+                    <input
+                      type="tel"
+                      name="phoneNumber"
+                      value={formData.phoneNumber}
+                      onChange={handleInputChange}
+                      className="mt-1 block py-2 px-3 w-full rounded-md border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 shadow-sm focus:border-purple-500 focus:ring-purple-500 sm:text-sm"
+                      required
+                    />
+                  </div>
+                  <div className="flex justify-end gap-2">
+                    <button
+                      type="button"
+                      onClick={handleCloseModal}
+                      className="px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      type="submit"
+                      className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
+                    >
+                      Save
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          )}
 
           {/* Quick Stats */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
@@ -285,7 +412,6 @@ export default function Profile() {
                 My Properties
               </h2>
               <Link href={"/add-property"}>
-                {" "}
                 <button className="px-4 py-2 bg-purple-100 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400 rounded-lg hover:bg-purple-200 dark:hover:bg-purple-900/40 transition-colors cursor-pointer whitespace-nowrap">
                   Add New
                 </button>
@@ -332,11 +458,11 @@ export default function Profile() {
                   </div>
 
                   <div className="flex md:flex-col gap-2">
-                    <button className="px-3 py-1 text-sm bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors cursor-pointer whitespace-nowrap">
+                    {/* <button className="px-3 py-1 text-sm bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors cursor-pointer whitespace-nowrap">
                       Edit
-                    </button>
+                    </button> */}
                     <Link
-                      href={`/property/property._id`}
+                      href={`/property/${property._id}`}
                       className="px-3 py-1 text-sm bg-blue-100 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400 rounded-lg hover:bg-blue-200 dark:hover:bg-blue-900/40 transition-colors cursor-pointer whitespace-nowrap"
                     >
                       View
@@ -347,8 +473,6 @@ export default function Profile() {
             </div>
           </div>
         </div>
-
-        {/* Mobile Bottom Navigation */}
         <MobileBottomNav />
       </div>
     );

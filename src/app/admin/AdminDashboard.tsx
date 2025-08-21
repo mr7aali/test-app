@@ -2,7 +2,12 @@
 import React, { useEffect, useState } from "react";
 import { Menu } from "lucide-react";
 import AdminSidebar from "@/components/adminPage/AdminSidebar";
-import { deleteUser, updateUser } from "./actions";
+import {
+  deleteProperties,
+  deleteUser,
+  updateProperty,
+  updateUser,
+} from "./actions";
 import Loading from "../loading";
 import { getUserInfo } from "@/services/auth.service";
 import { useRouter } from "next/navigation";
@@ -158,7 +163,12 @@ const AdminDashboard = ({
     setShowUserModal(false);
   };
 
-  const handleUpdateProperty = () => {
+  const handleUpdateProperty = async () => {
+    if (selectedProperty?._id)
+      await updateProperty({
+        id: selectedProperty._id,
+        updatedData: propertyForm,
+      });
     console.log("Updating property:", propertyForm);
     setShowPropertyModal(false);
   };
@@ -167,11 +177,24 @@ const AdminDashboard = ({
     if (confirmAction === "deleteUser" && !!confirmId) {
       await deleteUser(confirmId);
       console.log(`Deleting user ${confirmId}`);
-    } else if (confirmAction === "deleteProperty") {
+    } else if (confirmAction === "deleteProperty" && !!confirmId) {
+      await deleteProperties(confirmId);
       console.log(`Deleting property ${confirmId}`);
-    } else if (confirmAction === "approveProperty") {
+    } else if (confirmAction === "approveProperty" && !!confirmId) {
+      await updateProperty({
+        id: confirmId,
+        updatedData: {
+          status: "approve",
+        },
+      });
       console.log(`Approving property ${confirmId}`);
-    } else if (confirmAction === "rejectProperty") {
+    } else if (confirmAction === "rejectProperty" && !!confirmId) {
+      await updateProperty({
+        id: confirmId,
+        updatedData: {
+          status: "reject",
+        },
+      });
       console.log(`Rejecting property ${confirmId}`);
     }
     setShowConfirmModal(false);
@@ -359,7 +382,7 @@ const AdminDashboard = ({
                         {property.location}
                       </td>
                       <td className="px-4 py-4 sm:px-6 hidden lg:table-cell">
-                        ${property.rent}
+                        {property.rent} <span className="text-[20px]"> ৳ </span>
                       </td>
                       <td>
                         <span
@@ -466,7 +489,7 @@ const AdminDashboard = ({
                       </td>
                       <td className="px-4 py-4 sm:px-6 hidden md:table-cell">
                         {" "}
-                        {property.rent}
+                        {property.rent} <span className="text-[20px]"> ৳ </span>
                       </td>
                       {/* {{status}} */}
                       <td className="px-4 py-4 sm:px-6 hidden md:table-cell">
