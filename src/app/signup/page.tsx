@@ -13,6 +13,7 @@ export default function Signup() {
     confirmPassword: "",
     userType: "tenant",
   });
+
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState("");
   const [phone, setPhone] = useState("");
@@ -85,16 +86,13 @@ export default function Signup() {
         setSubmitStatus(data.error || "Something went wrong");
         return;
       }
-
       setSubmitStatus(
         "Account created successfully! Please check your email for verification."
       );
-      router.push("/profile");
-      // Reset form on success
+
       setFormData({
         fullName: "",
         email: "",
-
         password: "",
         confirmPassword: "",
         userType: "tenant",
