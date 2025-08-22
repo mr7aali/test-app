@@ -3,7 +3,7 @@ import { type NextRequest, NextResponse } from "next/server";
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { fullName, email, phone, password, userType } = body;
+    const { fullName, email, phone, password, role } = body;
 
     const apiResponse = await fetch(
       "https://place-arena-backend.vercel.app/api/v1/auth/register",
@@ -15,9 +15,8 @@ export async function POST(request: NextRequest) {
         body: JSON.stringify({
           fullName,
           email,
-          role: userType === "tenant" ? "tenant" : "owner",
+          role: role,
           password,
-
           phoneNumber: phone,
         }),
       }

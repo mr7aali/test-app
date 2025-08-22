@@ -1,7 +1,9 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
+// import { Bookmark, MapPin, Door, Drop, Star } from "@lucid/react";
 import { IProperties } from "@/app/saved/page";
+import { Bookmark, DoorClosed, Droplet, MapPin, Star } from "lucide-react";
 
 interface Property {
   _id: string;
@@ -91,14 +93,14 @@ export default function PropertyCard({
                   : "bg-white/80 text-gray-600 hover:bg-blue-100 hover:text-blue-600"
               }`}
             >
-              <i
-                className={`${
-                  isSaved ? "ri-bookmark-fill" : "ri-bookmark-line"
-                } text-xs`}
-              ></i>
+              <Bookmark
+                className="w-3 h-3"
+                fill={isSaved ? "currentColor" : "none"}
+                stroke="currentColor"
+              />
             </button>
             <div className="w-6 h-6 bg-amber-500 rounded-full flex items-center justify-center transition-all duration-200 hover:bg-amber-400">
-              <i className="ri-star-fill text-white text-xs"></i>
+              <Star className="w-3 h-3 text-white" fill="currentColor" />
             </div>
           </div>
         </div>
@@ -107,7 +109,7 @@ export default function PropertyCard({
             {property.title}
           </h3>
           <div className="flex items-center text-gray-600 dark:text-gray-400 mb-2">
-            <i className="ri-map-pin-line w-3 h-3 flex items-center justify-center mr-1"></i>
+            <MapPin className="w-3 h-3 mr-1" />
             <span className="text-xs truncate">{property.location}</span>
           </div>
           <div className="flex items-center justify-between text-xs text-gray-600 dark:text-gray-400 mb-2">
@@ -155,14 +157,14 @@ export default function PropertyCard({
                 : "bg-white/80 text-gray-600 hover:bg-blue-100 hover:text-blue-600"
             }`}
           >
-            <i
-              className={`${
-                isSaved ? "ri-bookmark-fill" : "ri-bookmark-line"
-              } text-sm`}
-            ></i>
+            <Bookmark
+              className="w-4 h-4"
+              fill={isSaved ? "currentColor" : "none"}
+              stroke="currentColor"
+            />
           </button>
           <div className="w-8 h-8 bg-amber-500 rounded-full flex items-center justify-center transition-all duration-200 hover:bg-amber-400">
-            <i className="ri-star-fill text-white text-sm"></i>
+            <Star className="w-4 h-4 text-white" fill="currentColor" />
           </div>
         </div>
       </div>
@@ -171,17 +173,17 @@ export default function PropertyCard({
           {property.title}
         </h3>
         <div className="flex items-center text-gray-600 dark:text-gray-400 mb-3">
-          <i className="ri-map-pin-line w-4 h-4 flex items-center justify-center mr-1"></i>
+          <MapPin className="w-4 h-4 mr-1" />
           <span className="text-sm">{property.location}</span>
         </div>
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center space-x-4 text-sm text-gray-600 dark:text-gray-400">
             <div className="flex items-center">
-              <i className="ri-door-line w-4 h-4 flex items-center justify-center mr-1"></i>
+              <DoorClosed className="w-4 h-4 mr-1" />
               <span>{property.rooms} Rooms</span>
             </div>
             <div className="flex items-center">
-              <i className="ri-drop-line w-4 h-4 flex items-center justify-center mr-1"></i>
+              <Droplet className="w-4 h-4 mr-1" />
               <span>{property.bathrooms} Baths</span>
             </div>
           </div>

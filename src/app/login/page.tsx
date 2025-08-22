@@ -54,7 +54,7 @@ export default function Login() {
         accessToken: data.accessToken,
         refreshToken: data.refreshToken,
       });
-      router.back();
+      router.push("/");
       setSubmitStatus("Login successful! Redirecting...");
     } catch (error) {
       setSubmitStatus("Invalid email or password. Please try again.");
