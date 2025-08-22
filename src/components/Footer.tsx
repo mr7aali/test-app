@@ -8,7 +8,9 @@ import {
   Facebook,
   Twitter,
   Instagram,
+  MessageCircle,
 } from "lucide-react";
+import WhatsappIcon from "../../public/icon/WhatsappIcon";
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
@@ -87,7 +89,7 @@ export default function Footer() {
               <li className="flex items-start">
                 <MapPin className="w-4 h-4 flex items-center justify-center mr-3 mt-0.5 text-purple-400" />
                 <span className="text-gray-400 text-sm">
-                  123 Khan Jahan Ali Road
+                  Nirala residential Area,16 Road,
                   <br />
                   Khulna, Bangladesh
                 </span>
@@ -98,7 +100,7 @@ export default function Footer() {
                   href="tel:+8801712345678"
                   className="text-gray-400 hover:text-white transition-colors text-sm"
                 >
-                  +880 1910683176
+                  +880 1910-683176
                 </a>
               </li>
               <li className="flex items-center">
@@ -107,7 +109,7 @@ export default function Footer() {
                   href="mailto:info@placearena.com"
                   className="text-gray-400 hover:text-white transition-colors text-sm"
                 >
-                  info@placearena.com
+                  placearena.hr@gmail.com
                 </a>
               </li>
             </ul>
@@ -122,7 +124,7 @@ export default function Footer() {
             </p>
             <div className="flex space-x-3">
               <a
-                href="https://facebook.com"
+                href="https://www.facebook.com/profile.php?id=61577692630030"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-8 h-8 bg-gray-800 rounded-lg flex items-center justify-center transition-all duration-200 hover:bg-blue-500 hover:scale-105"
@@ -130,15 +132,16 @@ export default function Footer() {
                 <Facebook className="h-4 w-4" />
               </a>
               <a
-                href="https://twitter.com"
+                href="https://wa.me/+8801340628323"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-8 h-8 bg-gray-800 rounded-lg flex items-center justify-center transition-all duration-200 hover:bg-blue-500 hover:scale-105"
               >
-                <Twitter className="h-4 w-4" />
+                {/* <MessageCircle className="h-4 w-4" /> */}
+                <WhatsappIcon className="w-4 h-4 text-green-600" />
               </a>
               <a
-                href="https://instagram.com"
+                href="https://www.instagram.com/placearena.bd/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-8 h-8 bg-gray-800 rounded-lg flex items-center justify-center transition-all duration-200 hover:bg-blue-500 hover:scale-105"
