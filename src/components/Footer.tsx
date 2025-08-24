@@ -1,15 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import {
-  MapPin,
-  Phone,
-  Mail,
-  Facebook,
-  Twitter,
-  Instagram,
-  MessageCircle,
-} from "lucide-react";
+import { MapPin, Phone, Mail, Facebook, Instagram } from "lucide-react";
 import WhatsappIcon from "../../public/icon/WhatsappIcon";
 
 export default function Footer() {
