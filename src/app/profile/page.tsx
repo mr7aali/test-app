@@ -1,5 +1,4 @@
 "use client";
-
 import { useEffect, useState } from "react";
 import MobileBottomNav from "../../components/MobileBottomNav";
 import { usePathname, useRouter } from "next/navigation";
@@ -10,6 +9,7 @@ import { getToken, getUserInfo } from "@/services/auth.service";
 import { getUserProfile } from "../actions";
 import { sendOtpToPhone, updateProfile, verifyOtpFromPhone } from "./actions";
 import { CheckCircle2, XCircle } from "lucide-react";
+import Image from "next/image";
 
 function ProfileSkeleton() {
   return (
@@ -127,21 +127,36 @@ export default function Profile() {
   const pathname = usePathname();
   const authChecked = useAuthGuard();
   const router = useRouter();
-  const [user] = useState(
-    () => getUserInfo() as { email: string; role: string; sub: string }
-  );
+
+  const [user, setUser] = useState<{
+    email: string;
+    role: string;
+    sub: string;
+  } | null>(null);
+
+  useEffect(() => {
+    const user = getUserInfo() as { email: string; role: string; sub: string };
+    setUser(user);
+  }, []);
 
   useEffect(() => {
     const fetchProperties = async () => {
       const res = await fetch(
-        `https://place-arena-backend.vercel.app/api/v1/property/owner/${user?.sub}`,
-        { method: "GET", credentials: "include", next: { tags: ["profile"] } }
+        `https://place-arena-backend.vercel.app/api/v1/property/owner/${
+          getUserInfo()?.sub
+        }`,
+        {
+          method: "GET",
+          credentials: "include",
+          next: { tags: ["profile"], revalidate: 0 },
+          cache: "no-store",
+        }
       );
       const data = await res.json();
       setMyProperties(data);
     };
-    if (user && user?.sub) fetchProperties();
-  }, [user]);
+    fetchProperties();
+  }, []);
 
   useEffect(() => {
     const Token = getToken();
@@ -192,6 +207,7 @@ export default function Profile() {
     const Token = getToken();
     if (!Token) return;
     try {
+      if (user === null) return;
       const result = await updateProfile({
         id: user.sub,
         updatedData: formData,
@@ -253,7 +269,9 @@ export default function Profile() {
         <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-lg p-6 md:p-8 mb-6">
           <div className="flex flex-col md:flex-row items-center md:items-start gap-6">
             <div className="w-24 h-24 md:w-32 md:h-32 rounded-full overflow-hidden bg-gray-200 dark:bg-gray-700">
-              <img
+              <Image
+                width={128}
+                height={128}
                 src="https://img.freepik.com/premium-vector/hipster-man-with-beard-glasses-vector-illustration-cartoon-style_1142-64996.jpg?w=360"
                 alt="Profile"
                 className="w-full h-full object-cover object-top"
