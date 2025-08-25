@@ -140,7 +140,7 @@ export default function Profile() {
       const data = await res.json();
       setMyProperties(data);
     };
-    if (user && user?.sub) fetchProperties();
+    fetchProperties();
   }, [user]);
 
   useEffect(() => {
