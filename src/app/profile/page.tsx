@@ -11,6 +11,7 @@ import { getUserProfile } from "../actions";
 import { sendOtpToPhone, updateProfile, verifyOtpFromPhone } from "./actions";
 import { CheckCircle2, XCircle } from "lucide-react";
 import next from "next";
+import Image from "next/image";
 
 function ProfileSkeleton() {
   return (
@@ -129,7 +130,18 @@ export default function Profile() {
   const authChecked = useAuthGuard();
   const router = useRouter();
 
-  const user = getUserInfo() as { email: string; role: string; sub: string };
+  const [user, setUser] = useState<{
+    email: string;
+    role: string;
+    sub: string;
+  } | null>(null);
+
+  useEffect(() => {
+    const user = getUserInfo() as { email: string; role: string; sub: string };
+    setUser(user);
+  }, []);
+
+  console.log(user);
   useEffect(() => {
     const fetchProperties = async () => {
       const res = await fetch(
@@ -259,7 +271,9 @@ export default function Profile() {
         <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-lg p-6 md:p-8 mb-6">
           <div className="flex flex-col md:flex-row items-center md:items-start gap-6">
             <div className="w-24 h-24 md:w-32 md:h-32 rounded-full overflow-hidden bg-gray-200 dark:bg-gray-700">
-              <img
+              <Image
+                width={128}
+                height={128}
                 src="https://img.freepik.com/premium-vector/hipster-man-with-beard-glasses-vector-illustration-cartoon-style_1142-64996.jpg?w=360"
                 alt="Profile"
                 className="w-full h-full object-cover object-top"
