@@ -9,7 +9,7 @@ import { useAuthGuard } from "@/utils/useAuthGuard";
 import { getToken, getUserInfo } from "@/services/auth.service";
 import { getUserProfile } from "../actions";
 import { sendOtpToPhone, updateProfile, verifyOtpFromPhone } from "./actions";
-import { CheckCircle, CheckCircle2, XCircle } from "lucide-react";
+import { CheckCircle2, XCircle } from "lucide-react";
 
 function ProfileSkeleton() {
   return (
@@ -206,17 +206,18 @@ export default function Profile() {
   };
 
   const sendOtp = async () => {
-    // if (userProfile && userProfile?._id) {
-    //   await sendOtpToPhone({
-    //     phone: formData.phoneNumber,
-    //     id: userProfile?._id,
-    //   });
-    // }
-    console.log(formData.phoneNumber);
+    if (userProfile && userProfile?._id) {
+      const phoneNumber = formData.phoneNumber.startsWith("+")
+        ? formData.phoneNumber.slice(1)
+        : formData.phoneNumber;
+      await sendOtpToPhone({
+        phone: phoneNumber,
+        id: userProfile?._id,
+      });
+    }
     setIsPhoneModalOpen(false);
     setIsOtpModalOpen(true);
   };
-
   const verifyOtp = async () => {
     if (userProfile?._id) {
       const data = await verifyOtpFromPhone({
@@ -226,6 +227,7 @@ export default function Profile() {
       if (data.verified) {
         setUserProfile({ ...userProfile, verified: true });
         setIsOtpModalOpen(false);
+        setIsVerifyModalOpen(false);
       }
     }
   };
@@ -344,7 +346,7 @@ export default function Profile() {
         )}
 
         {/* Phone Number Modal */}
-        {isPhoneModalOpen && (
+        {/* {isPhoneModalOpen && (
           <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
             <div className="bg-white dark:bg-gray-800 rounded-xl p-6 w-full max-w-sm shadow-lg transform transition-all duration-300 ease-out">
               <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
@@ -377,8 +379,56 @@ export default function Profile() {
               </div>
             </div>
           </div>
+        )} */}
+        {isPhoneModalOpen && (
+          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+            <div className="bg-white dark:bg-gray-800 rounded-xl p-6 w-full max-w-sm shadow-lg transform transition-all duration-300 ease-out">
+              <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+                Update Phone Number
+              </h2>
+              <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+                Enter or edit your phone number for verification.
+              </p>
+              <input
+                type="tel"
+                name="phoneNumber"
+                value={formData.phoneNumber}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  if (/^\+8801\d{0,9}$/.test(value) || value === "") {
+                    setFormData((prev) => ({
+                      ...prev,
+                      [e.target.name]: value,
+                    }));
+                  }
+                }}
+                placeholder="+88017XXXXXXXX"
+                className="w-full px-3 py-2 mb-4 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 dark:bg-gray-700 dark:text-white"
+              />
+              {!/^\+8801\d{9}$/.test(formData.phoneNumber) &&
+                formData.phoneNumber && (
+                  <p className="text-sm text-red-600 dark:text-red-400 mb-4">
+                    Number must be in format +8801 followed by 9 digits
+                  </p>
+                )}
+              <div className="flex justify-end gap-3">
+                <button
+                  onClick={handleClosePhoneModal}
+                  className="px-4 py-2 text-sm text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 rounded-md hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={sendOtp}
+                  disabled={!/^\+8801\d{9}$/.test(formData.phoneNumber)}
+                  className="px-4 py-2 text-sm bg-purple-600 text-white rounded-md hover:bg-purple-700 transition-colors disabled:bg-purple-300 disabled:cursor-not-allowed"
+                >
+                  Send Code
+                </button>
+              </div>
+            </div>
+          </div>
         )}
-
         {/* OTP Modal */}
         {isOtpModalOpen && (
           <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
