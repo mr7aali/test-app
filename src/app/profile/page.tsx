@@ -10,6 +10,7 @@ import { getToken, getUserInfo } from "@/services/auth.service";
 import { getUserProfile } from "../actions";
 import { sendOtpToPhone, updateProfile, verifyOtpFromPhone } from "./actions";
 import { CheckCircle2, XCircle } from "lucide-react";
+import next from "next";
 
 function ProfileSkeleton() {
   return (
@@ -135,7 +136,12 @@ export default function Profile() {
     const fetchProperties = async () => {
       const res = await fetch(
         `https://place-arena-backend.vercel.app/api/v1/property/owner/${user?.sub}`,
-        { method: "GET", credentials: "include", next: { tags: ["profile"] } }
+        {
+          method: "GET",
+          credentials: "include",
+          next: { tags: ["profile"], revalidate: 0 },
+          cache: "no-store",
+        }
       );
       const data = await res.json();
       setMyProperties(data);
