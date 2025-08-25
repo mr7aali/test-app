@@ -128,14 +128,14 @@ export default function Profile() {
   const pathname = usePathname();
   const authChecked = useAuthGuard();
   const router = useRouter();
-  const [user] = useState(
-    () => getUserInfo() as { email: string; role: string; sub: string }
-  );
 
+  const user = getUserInfo() as { email: string; role: string; sub: string };
   useEffect(() => {
     const fetchProperties = async () => {
       const res = await fetch(
-        `https://place-arena-backend.vercel.app/api/v1/property/owner/${user?.sub}`,
+        `https://place-arena-backend.vercel.app/api/v1/property/owner/${
+          getUserInfo()?.sub
+        }`,
         {
           method: "GET",
           credentials: "include",
@@ -147,7 +147,7 @@ export default function Profile() {
       setMyProperties(data);
     };
     fetchProperties();
-  }, [user]);
+  }, []);
 
   useEffect(() => {
     const Token = getToken();
