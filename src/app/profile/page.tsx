@@ -11,6 +11,7 @@ import { useAuthGuard } from "@/utils/useAuthGuard";
 import { getToken, getUserInfo } from "@/services/auth.service";
 import { getUserProfile } from "../actions";
 import { updateProfile } from "./actions";
+import { CheckCircle, CheckCircle2, XCircle } from "lucide-react";
 
 function ProfileSkeleton() {
   return (
@@ -94,6 +95,7 @@ export default function Profile() {
     createdAt?: string | Date;
     fullName?: string;
     _id?: string;
+    verified: boolean;
   };
   type IProperty = {
     _id: string;
@@ -121,21 +123,16 @@ export default function Profile() {
     phoneNumber: "",
     email: "",
   });
-
+  console.log(userProfile);
   const pathname = usePathname();
   const authChecked = useAuthGuard();
   const router = useRouter();
-  const user = getUserInfo() as {
-    email: string;
-    sub: string;
-    role: "admin" | "owner";
-  };
+  const [user] = useState(() => getUserInfo());
 
   useEffect(() => {
     const fetchProperties = async () => {
-      if (!user?.sub) return;
       const res = await fetch(
-        `https://place-arena-backend.vercel.app/api/v1/property/owner/${user.sub}`,
+        `https://place-arena-backend.vercel.app/api/v1/property/owner/${user?.sub}`,
         {
           method: "GET",
           credentials: "include",
@@ -145,9 +142,11 @@ export default function Profile() {
       const data = await res.json();
       setMyProperties(data);
     };
-    fetchProperties();
+    if (user && user?.sub) {
+      fetchProperties();
+    }
   }, [user]);
-
+  console.log(user);
   useEffect(() => {
     const Token = getToken();
 
@@ -253,8 +252,19 @@ export default function Profile() {
               </div>
 
               <div className="flex-1 text-center md:text-left">
-                <h1 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mb-2">
+                <h1 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mb-2 flex items-center justify-center md:justify-start">
                   {userProfile?.fullName}
+                  {userProfile?.verified ? (
+                    <CheckCircle2
+                      className="w-6 h-6 ml-2 text-green-600 dark:text-green-400 hover:scale-110 transition-transform duration-200"
+                      aria-label="Verified Account"
+                    />
+                  ) : (
+                    <XCircle
+                      className="w-6 h-6 ml-2 text-red-600 dark:text-red-400 hover:scale-110 transition-transform duration-200"
+                      aria-label="Unverified Account"
+                    />
+                  )}
                 </h1>
                 <div className="space-y-2 text-gray-600 dark:text-gray-400">
                   <div className="flex items-center justify-center md:justify-start">
@@ -290,7 +300,7 @@ export default function Profile() {
                 >
                   Edit Profile
                 </button>
-                {user.role === "admin" && (
+                {user?.role === "admin" && (
                   <Link
                     href={"/admin"}
                     className="px-6 py-2 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-lg hover:from-purple-700 hover:to-blue-700 transition-all duration-300 cursor-pointer whitespace-nowrap"
