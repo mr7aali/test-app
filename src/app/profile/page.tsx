@@ -1,5 +1,4 @@
 "use client";
-
 import { useEffect, useState } from "react";
 import MobileBottomNav from "../../components/MobileBottomNav";
 import { usePathname, useRouter } from "next/navigation";
@@ -10,7 +9,6 @@ import { getToken, getUserInfo } from "@/services/auth.service";
 import { getUserProfile } from "../actions";
 import { sendOtpToPhone, updateProfile, verifyOtpFromPhone } from "./actions";
 import { CheckCircle2, XCircle } from "lucide-react";
-import next from "next";
 import Image from "next/image";
 
 function ProfileSkeleton() {
@@ -141,7 +139,6 @@ export default function Profile() {
     setUser(user);
   }, []);
 
-  console.log(user);
   useEffect(() => {
     const fetchProperties = async () => {
       const res = await fetch(
@@ -210,6 +207,7 @@ export default function Profile() {
     const Token = getToken();
     if (!Token) return;
     try {
+      if (user === null) return;
       const result = await updateProfile({
         id: user.sub,
         updatedData: formData,
