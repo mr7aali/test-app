@@ -25,3 +25,46 @@ export const updateProfile = async ({
 
   return data;
 };
+
+export const sendOtpToPhone = async ({
+  phone,
+  id,
+}: {
+  phone: string;
+  id: string;
+}) => {
+  const res = await fetch(`${process.env.BACKEND_URL}/api/v1/users/otp`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      id: id,
+      phone: phone,
+    }),
+  });
+  const data = await res.json();
+
+  return data;
+};
+
+export const verifyOtpFromPhone = async ({
+  id,
+  code,
+}: {
+  id: string;
+  code: string;
+}) => {
+  const res = await fetch(
+    `${process.env.BACKEND_URL}/api/v1/users/verify-otp`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        id: id,
+        code: code,
+      }),
+    }
+  );
+  const data = await res.json();
+
+  return data;
+};
