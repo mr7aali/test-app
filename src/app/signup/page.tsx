@@ -113,9 +113,15 @@ export default function Signup() {
       <div className="flex items-center justify-center min-h-[80vh] px-6 py-12">
         <div className="max-w-md w-full">
           <div className="text-center mb-8">
-            <div className="w-16 h-16 bg-gradient-to-r from-purple-600 to-blue-600 rounded-2xl mx-auto mb-4 flex items-center justify-center">
-              <i className="ri-user-add-line text-white text-2xl"></i>
-            </div>
+            <div
+              style={{
+                backgroundImage: "url('/icon.jpeg')",
+                backgroundSize: "cover",
+                backgroundPosition: "center",
+                backgroundBlendMode: "overlay",
+              }}
+              className="w-16 h-16 bg-gradient-to-r from-purple-600 to-blue-600 rounded-2xl mx-auto mb-4 flex items-center justify-center"
+            ></div>
             <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
               Create Account
             </h1>
