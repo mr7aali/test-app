@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { User, Mail, Phone, Home, Lock, CheckSquare } from "lucide-react";
 
 export default function Signup() {
   const router = useRouter();
@@ -17,6 +18,7 @@ export default function Signup() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState("");
   const [phone, setPhone] = useState("");
+
   const handlePhoneNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     let value = e.target.value;
     if (value.length > 14) {
@@ -24,12 +26,11 @@ export default function Signup() {
       return;
     }
     if (!value.startsWith("+8801")) {
-      // Always ensure phone number starts with +8801
-      value = "+8801" + value.replace(/^\+?8801?/, ""); // remove extra prefix if typed
+      value = "+8801" + value.replace(/^\+?8801?/, "");
     }
-
     setPhone(value);
   };
+
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
@@ -97,7 +98,7 @@ export default function Signup() {
         confirmPassword: "",
         userType: "tenant",
       });
-      router.push("/login"); // Redirect to login page after successful signup
+      router.push("/login");
     } catch (error) {
       console.error("Signup error:", error);
       setSubmitStatus(
@@ -111,7 +112,7 @@ export default function Signup() {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
       <div className="flex items-center justify-center min-h-[80vh] px-6 py-12">
-        <div className="max-w-md w-full">
+        <div className="max-w-2xl w-full">
           <div className="text-center mb-8">
             <div
               style={{
@@ -134,61 +135,73 @@ export default function Signup() {
             <form
               id="signup-form"
               onSubmit={handleSubmit}
-              className="space-y-6"
+              className="grid grid-cols-1 md:grid-cols-2 gap-6"
             >
-              <div>
+              <div className="relative">
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                   Full Name *
                 </label>
+                <div className="absolute inset-y-0 left-0 top-6 flex items-center pl-3">
+                  <User className="h-5 w-5 text-gray-400" />
+                </div>
                 <input
                   type="text"
                   name="fullName"
                   value={formData.fullName}
                   onChange={handleInputChange}
                   placeholder="Enter your full name"
-                  className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
+                  className="w-full pl-10 pr-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
                   required
                 />
               </div>
 
-              <div>
+              <div className="relative">
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                   Email Address *
                 </label>
+                <div className="absolute inset-y-0 left-0 top-6 flex items-center pl-3">
+                  <Mail className="h-5 w-5 text-gray-400" />
+                </div>
                 <input
                   type="email"
                   name="email"
                   value={formData.email}
                   onChange={handleInputChange}
                   placeholder="Enter your email"
-                  className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
+                  className="w-full pl-10 pr-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
                   required
                 />
               </div>
 
-              <div>
+              <div className="relative">
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                   Phone Number
                 </label>
+                <div className="absolute inset-y-0 left-0 top-6 flex items-center pl-3">
+                  <Phone className="h-5 w-5 text-gray-400" />
+                </div>
                 <input
                   type="tel"
                   name="phone"
                   value={phone}
                   onChange={handlePhoneNumberChange}
                   placeholder="+880 1XXX-XXXXXX"
-                  className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
+                  className="w-full pl-10 pr-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
                 />
               </div>
 
-              <div>
+              <div className="relative">
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                   I am a *
                 </label>
+                <div className="absolute inset-y-0 left-0 top-6 flex items-center pl-3">
+                  <Home className="h-5 w-5 text-gray-400" />
+                </div>
                 <select
                   name="userType"
                   value={formData.userType}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent bg-white dark:bg-gray-800 text-gray-900 dark:text-white pr-8"
+                  className="w-full pl-10 pr-8 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
                   required
                 >
                   <option value="tenant">Tenant (Looking for property)</option>
@@ -196,37 +209,43 @@ export default function Signup() {
                 </select>
               </div>
 
-              <div>
+              <div className="relative">
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                   Password *
                 </label>
+                <div className="absolute inset-y-0 left-0 top-6 flex items-center pl-3">
+                  <Lock className="h-5 w-5 text-gray-400" />
+                </div>
                 <input
                   type="password"
                   name="password"
                   value={formData.password}
                   onChange={handleInputChange}
                   placeholder="Create a password (min. 6 characters)"
-                  className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
+                  className="w-full pl-10 pr-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
                   required
                 />
               </div>
 
-              <div>
+              <div className="relative">
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                   Confirm Password *
                 </label>
+                <div className="absolute inset-y-0 left-0 top-6 flex items-center pl-3">
+                  <Lock className="h-5 w-5 text-gray-400" />
+                </div>
                 <input
                   type="password"
                   name="confirmPassword"
                   value={formData.confirmPassword}
                   onChange={handleInputChange}
                   placeholder="Confirm your password"
-                  className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
+                  className="w-full pl-10 pr-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
                   required
                 />
               </div>
 
-              <div className="flex items-start">
+              <div className="md:col-span-2 flex items-start">
                 <input
                   type="checkbox"
                   className="w-4 h-4 text-purple-600 bg-gray-100 border-gray-300 rounded focus:ring-purple-500 dark:focus:ring-purple-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600 mt-0.5"
@@ -252,7 +271,7 @@ export default function Signup() {
 
               {submitStatus && (
                 <div
-                  className={`p-3 rounded-lg text-sm ${
+                  className={`md:col-span-2 p-3 rounded-lg text-sm ${
                     submitStatus.includes("successfully")
                       ? "bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-400"
                       : "bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-400"
@@ -262,26 +281,28 @@ export default function Signup() {
                 </div>
               )}
 
-              <button
-                type="submit"
-                disabled={isSubmitting}
-                className={`w-full py-3 rounded-lg font-semibold transition-all duration-300 cursor-pointer whitespace-nowrap ${
-                  isSubmitting
-                    ? "bg-gray-400 text-gray-200 cursor-not-allowed"
-                    : "bg-gradient-to-r from-purple-600 to-blue-600 text-white hover:from-purple-700 hover:to-blue-700"
-                }`}
-              >
-                {isSubmitting ? (
-                  <div className="flex items-center justify-center">
-                    <i className="ri-loader-line animate-spin mr-2"></i>
-                    Creating account...
-                  </div>
-                ) : (
-                  "Create Account"
-                )}
-              </button>
+              <div className="md:col-span-2">
+                <button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className={`w-full py-3 rounded-lg font-semibold transition-all duration-300 cursor-pointer whitespace-nowrap ${
+                    isSubmitting
+                      ? "bg-gray-400 text-gray-200 cursor-not-allowed"
+                      : "bg-gradient-to-r from-purple-600 to-blue-600 text-white hover:from-purple-700 hover:to-blue-700"
+                  }`}
+                >
+                  {isSubmitting ? (
+                    <div className="flex items-center justify-center">
+                      <i className="ri-loader-line animate-spin mr-2"></i>
+                      Creating account...
+                    </div>
+                  ) : (
+                    "Create Account"
+                  )}
+                </button>
+              </div>
 
-              <div className="text-center">
+              <div className="md:col-span-2 text-center">
                 <span className="text-gray-600 dark:text-gray-400">
                   Already have an account?{" "}
                 </span>

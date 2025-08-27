@@ -25,7 +25,6 @@ export default function Home() {
   useEffect(() => {
     async function fetchData() {
       const data = await getHomePageProperties();
-
       setProperties(data);
     }
     fetchData();
