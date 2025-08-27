@@ -1,6 +1,6 @@
 export const CLOUDINARY_CONFIG = {
-  cloudName: "dzrlmvvzu",
-  uploadPreset: "placearea",
+  cloudName: process.env.CLOUDINARY_CONFIG_cloudName || "dzrlmvvzu",
+  uploadPreset: process.env.CLOUDINARY_CONFIG_uploadPreset || "placearea",
   get apiUrl() {
     return `https://api.cloudinary.com/v1_1/${this.cloudName}/image/upload`;
   },

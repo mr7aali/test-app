@@ -46,7 +46,10 @@ export async function getUserProfile({
 }
 
 export const getHomePageProperties = async () => {
-  const res = await fetch(`${process.env.BACKEND_URL}/api/v1/property/approve`);
+  const res = await fetch(
+    `${process.env.BACKEND_URL}/api/v1/property/approve`,
+    { next: { revalidate: 0 }, cache: "no-store" }
+  );
   const data = await res.json();
 
   return data;
