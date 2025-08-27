@@ -3,7 +3,11 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { User, Mail, Phone, Home, Lock, CheckSquare } from "lucide-react";
+import { User, Mail, Phone, Home, Lock } from "lucide-react";
+import { auth } from "../firebase/firebase";
+import { GoogleAuthProvider, signInWithPopup } from "@firebase/auth";
+import { SignUpWithGoogleUser } from "../login/actions";
+import { storeUserInfo } from "@/services/auth.service";
 
 export default function Signup() {
   const router = useRouter();
@@ -18,7 +22,7 @@ export default function Signup() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState("");
   const [phone, setPhone] = useState("");
-
+  const provider = new GoogleAuthProvider();
   const handlePhoneNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     let value = e.target.value;
     if (value.length > 14) {
@@ -109,15 +113,49 @@ export default function Signup() {
     }
   };
 
+  // const handleGoogleSignup = async () => {
+  //   setIsSubmitting(true);
+  //   setSubmitStatus("");
+  //   try {
+  //     const result = await signInWithPopup(auth, provider);
+  //     const loggedInUser = result.user;
+  //     console.log(result);
+  //     console.log("User Info:", loggedInUser);
+  //   } catch (error) {
+  //     console.error("Google signup error:", error);
+  //     setSubmitStatus("Google signup failed. Please try again.");
+  //   } finally {
+  //     setIsSubmitting(false);
+  //   }
+  // };
   const handleGoogleSignup = async () => {
-    setIsSubmitting(true);
-    setSubmitStatus("");
     try {
-      // Replace with your actual Google OAuth endpoint
-      window.location.href = "/api/auth/google";
+      setIsSubmitting(true);
+      const result = await signInWithPopup(auth, provider);
+      const loggedInUser = result.user;
+
+      try {
+        const userData = {
+          fullName: loggedInUser.displayName || "Mr --",
+          email: loggedInUser.email,
+          role: "tenant",
+          password: loggedInUser.uid,
+          phoneNumber: loggedInUser.phoneNumber || "+8801300000000",
+        };
+        const data = await SignUpWithGoogleUser({ user: userData });
+
+        storeUserInfo({
+          accessToken: data.accessToken,
+          refreshToken: data.refreshToken,
+        });
+        router.push("/");
+        setSubmitStatus("Login successful! Redirecting...");
+      } catch (error) {
+        console.error("signup-with-google login error:", error);
+      }
     } catch (error) {
-      console.error("Google signup error:", error);
-      setSubmitStatus("Google signup failed. Please try again.");
+      console.error("Google login error:", error);
+      setSubmitStatus("Google login failed. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
