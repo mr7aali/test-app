@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { MapPin, Phone, Mail, Facebook, Instagram } from "lucide-react";
 import WhatsappIcon from "../../public/icon/WhatsappIcon";
 
@@ -14,16 +15,16 @@ export default function Footer() {
           {/* Brand Section */}
           <div className="col-span-1 md:col-span-1">
             <Link href="/" className="flex items-center space-x-2 mb-4">
-              <div
-                style={{
-                  backgroundImage: "url('/icon.jpeg')",
-                  backgroundSize: "cover",
-                  backgroundPosition: "center",
-                  backgroundBlendMode: "overlay",
-                }}
-                className="w-10 h-10 bg-gradient-to-r from-purple-600 to-blue-600 rounded-xl flex items-center justify-center"
-              ></div>
-              <span className="font-['Pacifico'] text-2xl bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
+              <div className="w-10 h-10 rounded-xl overflow-hidden  flex items-center justify-center p-1">
+                <Image
+                  src="/logo.jpeg"
+                  alt="Place Arena Logo"
+                  width={40}
+                  height={40}
+                  className="w-full h-full object-contain rounded-lg"
+                />
+              </div>
+              <span className="font-['Roboto'] text-2xl bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent font-bold">
                 Place Arena
               </span>
             </Link>

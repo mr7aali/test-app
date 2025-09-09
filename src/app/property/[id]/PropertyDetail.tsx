@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import React from "react";
 
 import MobileBottomNav from "../../../components/MobileBottomNav";
 import Image from "next/image";
@@ -35,6 +36,7 @@ export default function PropertyDetail({
   // const property = sampleProperties.find((p) => p.id === parseInt(propertyId));
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [showContactModal, setShowContactModal] = useState(false);
+  const [showImageModal, setShowImageModal] = useState(false);
 
   if (!property) {
     return (
@@ -62,6 +64,55 @@ export default function PropertyDetail({
     );
   };
 
+  const openImageModal = () => {
+    setShowImageModal(true);
+    // Prevent body scroll when modal is open
+    document.body.style.overflow = 'hidden';
+  };
+
+  const closeImageModal = () => {
+    setShowImageModal(false);
+    // Restore body scroll
+    document.body.style.overflow = 'unset';
+  };
+
+  const handleImageModalClick = (e: React.MouseEvent) => {
+    // Close modal when clicking on the backdrop (not on the image)
+    if (e.target === e.currentTarget) {
+      closeImageModal();
+    }
+  };
+
+  const handleKeyDown = (e: KeyboardEvent) => {
+    if (showImageModal) {
+      if (e.key === 'Escape') {
+        closeImageModal();
+      } else if (e.key === 'ArrowLeft') {
+        prevImage();
+      } else if (e.key === 'ArrowRight') {
+        nextImage();
+      }
+    }
+  };
+
+  // Add keyboard event listeners
+  React.useEffect(() => {
+    document.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+      // Cleanup: restore body scroll if component unmounts with modal open
+      document.body.style.overflow = 'unset';
+    };
+  }, [showImageModal]);
+
+  // Add React import for useEffect
+  React.useEffect(() => {
+    return () => {
+      // Cleanup: restore body scroll when component unmounts
+      document.body.style.overflow = 'unset';
+    };
+  }, []);
+
   const getConsistentDate = () => {
     const baseDate = new Date("2024-01-01");
     const daysToAdd = 234; // Example: 234 days from base date
@@ -80,68 +131,125 @@ export default function PropertyDetail({
       <div className="max-w-6xl mx-auto px-4 md:px-6 py-6 md:py-12">
         {/* Property Images Gallery */}
         <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-lg overflow-hidden mb-6">
-          <div className="relative h-64 md:h-96">
-            <Image
-              src={property.images[currentImageIndex]}
-              alt={property.title}
-              fill
-              className="w-full h-full object-cover object-top"
-            />
+          {/* Main Image Container */}
+          <div className="relative bg-gray-100 dark:bg-gray-800 flex items-center justify-center min-h-[300px] max-h-[80vh] cursor-pointer group" onClick={openImageModal}>
+            <div className="relative w-full h-full flex items-center justify-center">
+              <Image
+                src={property.images[currentImageIndex]}
+                alt={property.title}
+                width={800}
+                height={600}
+                className="max-w-full max-h-full object-contain transition-opacity duration-200"
+                style={{ 
+                  width: 'auto', 
+                  height: 'auto',
+                  maxWidth: '100%',
+                  maxHeight: '80vh'
+                }}
+                priority
+              />
+              
+              {/* Zoom Overlay Hint */}
+              <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-all duration-200 flex items-center justify-center">
+                <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 bg-black/50 text-white px-4 py-2 rounded-full backdrop-blur-sm">
+                  <i className="ri-zoom-in-line mr-2"></i>
+                  Click to zoom
+                </div>
+              </div>
+            </div>
 
             {/* Image Navigation */}
             {property.images.length > 1 && (
               <>
                 <button
-                  onClick={prevImage}
-                  className="absolute left-4 top-1/2 transform -translate-y-1/2 w-10 h-10 bg-black/50 text-white rounded-full flex items-center justify-center hover:bg-black/70 transition-colors cursor-pointer"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    prevImage();
+                  }}
+                  className="absolute left-4 top-1/2 transform -translate-y-1/2 w-12 h-12 bg-black/60 text-white rounded-full flex items-center justify-center hover:bg-black/80 hover:scale-110 transition-all duration-200 cursor-pointer z-10 backdrop-blur-sm"
                 >
-                  <ArrowLeft />
+                  <ArrowLeft className="w-5 h-5" />
                 </button>
                 <button
-                  onClick={nextImage}
-                  className="absolute right-4 top-1/2 transform -translate-y-1/2 w-10 h-10 bg-black/50 text-white rounded-full flex items-center justify-center hover:bg-black/70 transition-colors cursor-pointer"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    nextImage();
+                  }}
+                  className="absolute right-4 top-1/2 transform -translate-y-1/2 w-12 h-12 bg-black/60 text-white rounded-full flex items-center justify-center hover:bg-black/80 hover:scale-110 transition-all duration-200 cursor-pointer z-10 backdrop-blur-sm"
                 >
-                  {/* <i className="ri-arrow-right-line"></i> */}
-                  <ArrowRight />
+                  <ArrowRight className="w-5 h-5" />
                 </button>
               </>
             )}
 
             {/* Image Counter */}
-            <div className="absolute bottom-4 right-4 bg-black/50 text-white px-3 py-1 rounded-full text-sm">
+            <div className="absolute bottom-4 right-4 bg-black/70 text-white px-4 py-2 rounded-full text-sm font-medium backdrop-blur-sm">
               {currentImageIndex + 1} / {property.images.length}
             </div>
 
             {/* Property Type Badge */}
-            <div className="absolute top-4 left-4">
-              <span className="px-3 py-1 bg-purple-600 text-white text-sm font-medium rounded-full">
+            <div className="absolute top-4 left-4 z-10">
+              <span className="px-4 py-2 bg-purple-600 text-white text-sm font-semibold rounded-full shadow-lg backdrop-blur-sm">
                 {property.type}
               </span>
             </div>
+
+            {/* Fullscreen Button */}
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                openImageModal();
+              }}
+              className="absolute top-4 right-4 w-10 h-10 bg-black/60 text-white rounded-full flex items-center justify-center hover:bg-black/80 hover:scale-110 transition-all duration-200 cursor-pointer z-10 backdrop-blur-sm"
+            >
+              <i className="ri-fullscreen-line text-sm"></i>
+            </button>
           </div>
 
           {/* Thumbnail Gallery */}
           {property.images.length > 1 && (
-            <div className="p-4 border-t border-gray-200 dark:border-gray-700">
-              <div className="flex gap-2 overflow-x-auto">
+            <div className="p-4 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50">
+              <div className="flex gap-3 overflow-x-auto pb-2">
                 {property.images.map((image, index) => (
                   <button
                     key={index}
-                    onClick={() => setCurrentImageIndex(index)}
-                    className={`flex-shrink-0 w-16 h-16 md:w-20 md:h-20 rounded-lg overflow-hidden border-2 transition-all cursor-pointer ${
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setCurrentImageIndex(index);
+                    }}
+                    onDoubleClick={() => {
+                      setCurrentImageIndex(index);
+                      openImageModal();
+                    }}
+                    className={`flex-shrink-0 relative rounded-lg overflow-hidden border-2 transition-all duration-200 cursor-pointer hover:shadow-lg ${
                       index === currentImageIndex
-                        ? "border-purple-600"
-                        : "border-transparent hover:border-purple-300"
+                        ? "border-purple-600 shadow-md scale-105"
+                        : "border-gray-200 dark:border-gray-600 hover:border-purple-300 dark:hover:border-purple-400"
                     }`}
                   >
-                    <div className="w-16 h-16 md:w-20 md:h-20 relative">
+                    <div className="w-20 h-20 md:w-24 md:h-24 bg-gray-100 dark:bg-gray-700 flex items-center justify-center">
                       <Image
-                        fill
                         src={image}
-                        alt={`${property.title} ${index + 1}`}
-                        className="w-full h-full object-cover object-top"
+                        alt={`${property.title} thumbnail ${index + 1}`}
+                        width={96}
+                        height={96}
+                        className="max-w-full max-h-full object-contain"
+                        style={{ 
+                          width: 'auto', 
+                          height: 'auto',
+                          maxWidth: '100%',
+                          maxHeight: '100%'
+                        }}
                       />
                     </div>
+                    {/* Active indicator */}
+                    {index === currentImageIndex && (
+                      <div className="absolute inset-0 bg-purple-600/20 flex items-center justify-center">
+                        <div className="w-6 h-6 bg-purple-600 rounded-full flex items-center justify-center">
+                          <i className="ri-check-line text-white text-sm"></i>
+                        </div>
+                      </div>
+                    )}
                   </button>
                 ))}
               </div>
@@ -326,6 +434,161 @@ export default function PropertyDetail({
               </a>
             </div>
           </div>
+        </div>
+      )}
+
+      {/* Image Modal */}
+      {showImageModal && (
+        <div 
+          className="fixed inset-0 bg-black/95 flex items-center justify-center z-50"
+          onClick={handleImageModalClick}
+        >
+          {/* Modal Header */}
+          <div className="absolute top-0 left-0 right-0 z-60 bg-gradient-to-b from-black/50 to-transparent p-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-4">
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    closeImageModal();
+                  }}
+                  className="w-10 h-10 bg-white/10 text-white rounded-full flex items-center justify-center hover:bg-white/20 hover:scale-110 transition-all duration-200 backdrop-blur-sm"
+                >
+                  <i className="ri-close-line text-lg"></i>
+                </button>
+                <div className="text-white">
+                  <h3 className="font-semibold">{property.title}</h3>
+                  <p className="text-sm text-white/70">
+                    {currentImageIndex + 1} of {property.images.length}
+                  </p>
+                </div>
+              </div>
+              
+              {/* Desktop Navigation Hint */}
+              <div className="hidden md:block text-white/70 text-sm">
+                Use arrow keys or click to navigate • ESC to close
+              </div>
+            </div>
+          </div>
+
+          {/* Image Container */}
+          <div className="relative w-full h-full flex items-center justify-center p-4 md:p-8">
+            <div className="relative max-w-full max-h-full">
+              <Image
+                src={property.images[currentImageIndex]}
+                alt={`${property.title} - Image ${currentImageIndex + 1}`}
+                width={1200}
+                height={800}
+                className="max-w-full max-h-full object-contain"
+                style={{ 
+                  width: 'auto', 
+                  height: 'auto',
+                  maxWidth: '100vw',
+                  maxHeight: '100vh'
+                }}
+                priority
+              />
+            </div>
+
+            {/* Navigation Buttons */}
+            {property.images.length > 1 && (
+              <>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    prevImage();
+                  }}
+                  className="absolute left-4 top-1/2 transform -translate-y-1/2 w-12 h-12 md:w-14 md:h-14 bg-white/10 text-white rounded-full flex items-center justify-center hover:bg-white/20 hover:scale-110 transition-all duration-200 backdrop-blur-sm z-20"
+                >
+                  <ArrowLeft className="w-5 h-5 md:w-6 md:h-6" />
+                </button>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    nextImage();
+                  }}
+                  className="absolute right-4 top-1/2 transform -translate-y-1/2 w-12 h-12 md:w-14 md:h-14 bg-white/10 text-white rounded-full flex items-center justify-center hover:bg-white/20 hover:scale-110 transition-all duration-200 backdrop-blur-sm z-20"
+                >
+                  <ArrowRight className="w-5 h-5 md:w-6 md:h-6" />
+                </button>
+              </>
+            )}
+          </div>
+
+          {/* Mobile Bottom Controls */}
+          <div className="absolute bottom-0 left-0 right-0 md:hidden bg-gradient-to-t from-black/50 to-transparent p-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-3">
+                {property.images.length > 1 && (
+                  <>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        prevImage();
+                      }}
+                      className="w-10 h-10 bg-white/10 text-white rounded-full flex items-center justify-center backdrop-blur-sm hover:bg-white/20 hover:scale-110 transition-all duration-200 active:scale-95"
+                    >
+                      <ArrowLeft className="w-4 h-4" />
+                    </button>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        nextImage();
+                      }}
+                      className="w-10 h-10 bg-white/10 text-white rounded-full flex items-center justify-center backdrop-blur-sm hover:bg-white/20 hover:scale-110 transition-all duration-200 active:scale-95"
+                    >
+                      <ArrowRight className="w-4 h-4" />
+                    </button>
+                  </>
+                )}
+              </div>
+              
+              <div className="flex items-center space-x-3">
+                <div className="text-white text-sm">
+                  {currentImageIndex + 1} / {property.images.length}
+                </div>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    closeImageModal();
+                  }}
+                  className="w-10 h-10 bg-white/10 text-white rounded-full flex items-center justify-center backdrop-blur-sm hover:bg-white/20 hover:scale-110 transition-all duration-200 active:scale-95"
+                >
+                  <i className="ri-close-line"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* Thumbnail Strip for Desktop */}
+          {property.images.length > 1 && (
+            <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 hidden md:block">
+              <div className="flex gap-2 bg-black/30 backdrop-blur-sm rounded-lg p-2">
+                {property.images.map((image, index) => (
+                  <button
+                    key={index}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setCurrentImageIndex(index);
+                    }}
+                    className={`w-12 h-12 rounded-md overflow-hidden border-2 transition-all duration-200 hover:scale-110 ${
+                      index === currentImageIndex
+                        ? "border-white scale-110"
+                        : "border-white/30 hover:border-white/60"
+                    }`}
+                  >
+                    <Image
+                      src={image}
+                      alt={`Thumbnail ${index + 1}`}
+                      width={48}
+                      height={48}
+                      className="w-full h-full object-cover"
+                    />
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       )}
 

@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect, Dispatch } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import {
   Search,
@@ -19,16 +20,16 @@ import { isLoggedIn, logOutUser } from "@/services/auth.service";
 // Logo Component
 const Logo = () => (
   <Link href="/" className="flex items-center space-x-3 group">
-    <div
-      style={{
-        backgroundImage: "url('/icon.jpeg')",
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        backgroundBlendMode: "overlay",
-      }}
-      className="w-12 h-12 md:w-12 md:h-12 bg-gradient-to-r from-purple-600 to-blue-600 rounded-2xl flex items-center justify-center transform group-hover:scale-105 transition-transform"
-    ></div>
-    <span className="font-['Pacifico'] text-xl md:text-2xl bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent group-hover:from-purple-500 group-hover:to-blue-500 transition-all">
+    <div className="w-12 h-12 md:w-12 md:h-12 rounded-2xl overflow-hidden transform group-hover:scale-105 transition-transform  flex items-center justify-center p-1">
+      <Image
+        src="/logo.jpeg"
+        alt="Place Arena Logo"
+        width={48}
+        height={48}
+        className="w-full h-full object-contain"
+      />
+    </div>
+    <span className="font-['Roboto'] text-xl md:text-2xl bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent group-hover:from-purple-500 group-hover:to-blue-500 transition-all font-bold">
       Place Arena
     </span>
   </Link>
