@@ -143,7 +143,7 @@ export default function Profile() {
   useEffect(() => {
     const fetchProperties = async () => {
       const res = await fetch(
-        `https://place-arena-backend.vercel.app/api/v1/property/owner/${
+        `https://api.placearena.com/api/v1/property/owner/${
           getUserInfo()?.sub
         }`,
         {
