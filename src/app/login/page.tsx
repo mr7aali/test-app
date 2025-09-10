@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Mail, Lock, Chrome } from "lucide-react";
+import { Mail, Lock } from "lucide-react";
 import { storeUserInfo } from "@/services/auth.service";
 import { GoogleAuthProvider, signInWithPopup } from "@firebase/auth";
 import { auth } from "../firebase/firebase";
