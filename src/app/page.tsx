@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useCallback, useEffect } from "react";
-
+import Image from "next/image";
 import SearchFilters from "../components/SearchFilters";
 import MobileBottomNav from "../components/MobileBottomNav";
 import dynamic from "next/dynamic";
@@ -32,14 +32,28 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-950 pb-20 md:pb-0 flex flex-col">
-      {/* Compact Hero Section */}
-      <div className="bg-gradient-to-r from-purple-600 to-blue-600 px-4 py-8">
-        <div className="max-w-7xl mx-auto text-center text-white">
-          <h1 className="text-2xl md:text-4xl font-bold mb-2 md:mb-4 leading-tight">
+      {/* Hero Section with Background Image */}
+      <div className="relative bg-gradient-to-r from-blue-600 to-blue-700 px-4 py-8 md:py-12 lg:py-16 overflow-hidden">
+        {/* Background Image */}
+        <div className="absolute inset-0 z-0">
+          <Image
+            src="/banner.jpg"
+            alt="Beautiful rental properties"
+            fill
+            className="object-cover object-center opacity-60"
+            priority
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 100vw, 100vw"
+          />
+          <div className="absolute inset-0 bg-black/20"></div>
+        </div>
+        
+        {/* Content */}
+        <div className="relative z-10 max-w-7xl mx-auto text-center text-white">
+          <h1 className="text-2xl md:text-4xl lg:text-5xl font-bold mb-2 md:mb-4 leading-tight drop-shadow-lg">
             Find Your Perfect
             <span className="block text-yellow-300">Rental Home</span>
           </h1>
-          <p className="text-sm md:text-lg text-purple-100 mb-4">
+          <p className="text-sm md:text-lg lg:text-xl text-white mb-4 max-w-2xl mx-auto drop-shadow-md">
             Premium properties in Khulna
           </p>
         </div>
